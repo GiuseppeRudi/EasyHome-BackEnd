@@ -1,13 +1,14 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence;
 
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UtenteDAO;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.UtenteDaoJDBC;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
+
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.UserDaoJDBC;
 
 import java.sql.*;
 
 public class DBManager {
 
-    private static UtenteDAO utentedao;
+    private UserDao userDao = null;
     private static DBManager instance;
     private Connection connection;
 
@@ -28,17 +29,7 @@ public class DBManager {
         }
     }
 
-    public UtenteDAO getUtenteDao()
-    {
 
-        if (utentedao==null)
-        {
-            return new UtenteDaoJDBC();
-        }
-        
-        return utentedao;
-    }
-    
     public static DBManager getInstance() {
         if (instance == null) {
             instance = new DBManager();
@@ -50,6 +41,12 @@ public class DBManager {
         return connection;
     }
 
+    public UserDao getUserDao(){
+        if (userDao == null) {
+            userDao = new UserDaoJDBC(getConnection());
+        }
+        return  userDao;
+    }
 
 
     public static void main(String[] args) {

@@ -1,30 +1,34 @@
+
 package it.unical.demacs.informatica.easyhomebackend.controller;
 
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UtenteDAO;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.UtenteDaoJDBC;
-import it.unical.demacs.informatica.easyhomebackend.persistence.model.Utente;
-import it.unical.demacs.informatica.easyhomebackend.service.UtenteService;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
+import it.unical.demacs.informatica.easyhomebackend.model.Utente;
+import it.unical.demacs.informatica.easyhomebackend.service.IUserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/utenti")
+@RequestMapping("/api/open/v1")
 public class UtenteController {
 
-    private final UtenteService utenteService = new UtenteService();
+    private final IUserService userService;
 
-
-
-
-    @GetMapping
-    public List<Utente> getAllUtenti() {
-        return utenteService.findAll();
+    public UtenteController(IUserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping
-    public String createUtente(@RequestBody Utente utente) {
-        utenteService.save(utente);
-        return "Utente salvato con successo!";
+    @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
+
+    public ResponseEntity<Void> createUser(@RequestBody Utente utente) {
+
+        this.userService.createUser(utente.getUsername() , utente.getPassword(), utente.getRole());
+
+        return  ResponseEntity.ok().build();
     }
+
 }
