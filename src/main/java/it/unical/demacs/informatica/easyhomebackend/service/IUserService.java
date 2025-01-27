@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface IUserService {
 
-    Utente createUser(String username, String password, UserRole role);
+    Utente createUser(Utente utente);
 
 
     Optional<Utente> getUser(String username);

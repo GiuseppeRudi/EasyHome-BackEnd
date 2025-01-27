@@ -37,14 +37,30 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login") // Endpoint per il login
-                        .successHandler((req, res, auth) -> res.setStatus(200)) // Gestione successo login
+                        .successHandler((req, res, auth) -> {
+                            // Ottieni il nome e il ruolo dell'utente autenticato
+                            String username = auth.getName(); // Username dell'utente
+                            String role = auth.getAuthorities().stream()
+                                    .map(authority -> authority.getAuthority())
+                                    .findFirst() // Se l'utente ha più ruoli, prendi il primo
+                                    .orElse("ROLE_USER"); // Default se non ci sono ruoli
+
+                            // Crea la risposta JSON
+                            String jsonResponse = String.format("{\"username\": \"%s\", \"role\": \"%s\"}", username, role);
+
+                            // Configura la risposta
+                            res.setStatus(200); // HTTP 200
+                            res.setContentType("application/json");
+                            res.getWriter().write(jsonResponse); // Scrivi il JSON nella risposta
+                        })
                         .failureHandler((req, res, ex) -> {
                             ex.printStackTrace(); // Log l'errore
                             res.setStatus(401); // Imposta lo stato HTTP come 401
-                            res.getWriter().write("Login failed: " + ex.getMessage()); // Scrivi il messaggio di errore
+                            res.setContentType("application/json");
+                            res.getWriter().write("{\"error\": \"Credenziali errate.\"}"); // Messaggio JSON di errore
                         })
-
                 )
+
                 .logout(logout -> logout
                         .logoutUrl("/api/logout") // Endpoint per il logout
                         .logoutSuccessHandler((req, res, auth) -> res.setStatus(200)) // Gestione successo logout

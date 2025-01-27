@@ -3,6 +3,7 @@ package it.unical.demacs.informatica.easyhomebackend.controller;
 
 
 
+import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.service.IUserService;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,8 @@ public class UtenteController {
     @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 
     public ResponseEntity<Void> createUser(@RequestBody Utente utente) {
-
-        this.userService.createUser(utente.getUsername() , utente.getPassword(), utente.getRole());
+        utente.setRole(UserRole.ROLE_USER);
+        this.userService.createUser(utente);
 
         return  ResponseEntity.ok().build();
     }

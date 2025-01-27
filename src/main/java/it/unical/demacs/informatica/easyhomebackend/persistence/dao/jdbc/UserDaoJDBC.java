@@ -23,7 +23,7 @@ public class UserDaoJDBC  implements UserDao {
     @Override
     public Utente findByPrimaryKey(String username) {
 
-        String query = "SELECT username, password , role FROM utente WHERE username = ?";
+        String query = "SELECT username, password , role, nome, cognome, data_nascita, nazionalita, email FROM utente WHERE username = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
@@ -32,7 +32,12 @@ public class UserDaoJDBC  implements UserDao {
                 return new Utente(
                         resultSet.getString("username"),
                         resultSet.getString("password"),
-                        UserRole.valueOf(resultSet.getString("role"))
+                        UserRole.valueOf(resultSet.getString("role")),
+                        resultSet.getString("nome"),
+                        resultSet.getString("cognome"),
+                        resultSet.getString("data_nascita"),
+                        resultSet.getString("nazionalita"),
+                        resultSet.getString("email")
                 );
             }
         } catch (Exception e) {
@@ -46,11 +51,16 @@ public class UserDaoJDBC  implements UserDao {
     public void save(Utente utente) {
 
 
-        String query = "INSERT INTO utente (username, password , role) VALUES (?, ? , ?) " ;
+        String query = "INSERT INTO utente (username, password , role,nome,cognome, data_nascita, nazionalita, email) VALUES (?, ? , ?, ?, ?, ?, ?,?) " ;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, utente.getUsername());
             statement.setString(2, utente.getPassword());
             statement.setString(3, utente.getRole().toString());
+            statement.setString(4, utente.getNome());
+            statement.setString(5, utente.getCognome());
+            statement.setString(6, utente.getData_nascita());
+            statement.setString(7, utente.getNazionalita());
+            statement.setString(8, utente.getEmail());
             statement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

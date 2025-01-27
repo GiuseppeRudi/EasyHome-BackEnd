@@ -29,10 +29,10 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public Utente createUser(String username, String password, UserRole role) {
+    public Utente createUser(Utente utente) {
         // TODO checks: fields are not null, password complexity, username not already used
-        this.userDao.save(new Utente(username, passwordEncoder.encode(password), role));
-        return this.getUser(username).get();
+        this.userDao.save(new Utente(utente.getUsername(), passwordEncoder.encode(utente.getPassword()), utente.getRole(),utente.getNome(),utente.getCognome(),utente.getData_nascita(),utente.getNazionalita(),utente.getEmail()));
+        return this.getUser(utente.getUsername()).get();
     }
 
     @Override
