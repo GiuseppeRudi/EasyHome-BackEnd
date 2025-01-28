@@ -29,14 +29,14 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.utente (
-    username character varying(100) NOT NULL,
-    password character varying(100),
-    role character varying(20),
-    nome character varying(50),
-    cognome character varying(20),
-    data_nascita character varying(20),
-    nazionalita character varying(20),
-    email character varying(50)
+                               username character varying(100) NOT NULL,
+                               password character varying(100),
+                               role character varying(20),
+                               nome character varying(50),
+                               cognome character varying(20),
+                               data_nascita character varying(20),
+                               nazionalita character varying(20),
+                               email character varying(50)
 );
 
 
@@ -48,14 +48,14 @@ ALTER TABLE public.utente OWNER TO postgres;
 -- Data for Name: utente; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.utente (username, password, role, nome, cognome, data_nascita, nazionalita, email) FROM stdin;
-john_doe	$2a$10$ckUF9WPuCjy62Q9PCqS8kOgJWnY6vmbU7oTfZ643mM/f1r.UEbusm	ROLE_USER	\N	\N	\N	\N	\N
-prova	$2a$10$p5P812D3j/09xbJlJ.tLtOXPPgjgl/.k4d6Hlwe7qLwRMuqEIG29.	ROLE_USER	\N	\N	\N	\N	\N
-GiuseppeRudi	$2a$10$MBRa1qBPuY5Mci6G6cpXA.eW2HsKvMvXuBRkQtDWcY9ueiI9WNARC	ROLE_ADMIN	\N	\N	\N	\N	\N
-Zio	$2a$10$wlb/jKKVjoa5WYh2RUYxKelKZo8jux3brLGZCPD3y6QOAzvC23Mxi	ROLE_USER	\N	\N	\N	\N	\N
-mario.rossi	$2a$10$WVWlBGaWN8EmN4c3yDm1mu/s0pTreYTSP2fxDJSgtu4JJtc7KX2hO	ROLE_USER	Mario	Rossi	1990-05-15	Italiana	mario.rossi@example.com
-fef	$2a$10$d6ABLlLkxUyno5pwODFg3.8e9vtHmvXAThIaoUiMzk48QbPnfDTu6	ROLE_USER	ffef	fefe	2025-01-20	fef	fefe
-\.
+INSERT INTO public.utente (username, password, role, nome, cognome, data_nascita, nazionalita, email)
+VALUES
+    ('john_doe', '$2a$10$ckUF9WPuCjy62Q9PCqS8kOgJWnY6vmbU7oTfZ643mM/f1r.UEbusm', 'ROLE_USER', NULL, NULL, NULL, NULL, NULL),
+    ('prova', '$2a$10$p5P812D3j/09xbJlJ.tLtOXPPgjgl/.k4d6Hlwe7qLwRMuqEIG29.', 'ROLE_USER', NULL, NULL, NULL, NULL, NULL),
+    ('GiuseppeRudi', '$2a$10$MBRa1qBPuY5Mci6G6cpXA.eW2HsKvMvXuBRkQtDWcY9ueiI9WNARC', 'ROLE_ADMIN', NULL, NULL, NULL, NULL, NULL),
+    ('Zio', '$2a$10$wlb/jKKVjoa5WYh2RUYxKelKZo8jux3brLGZCPD3y6QOAzvC23Mxi', 'ROLE_USER', NULL, NULL, NULL, NULL, NULL),
+    ('mario.rossi', '$2a$10$WVWlBGaWN8EmN4c3yDm1mu/s0pTreYTSP2fxDJSgtu4JJtc7KX2hO', 'ROLE_USER', 'Mario', 'Rossi', '1990-05-15', 'Italiana', 'mario.rossi@example.com'),
+    ('fef', '$2a$10$d6ABLlLkxUyno5pwODFg3.8e9vtHmvXAThIaoUiMzk48QbPnfDTu6', 'ROLE_USER', 'ffef', 'fefe', '2025-01-20', 'fef', 'fefe');
 
 
 --

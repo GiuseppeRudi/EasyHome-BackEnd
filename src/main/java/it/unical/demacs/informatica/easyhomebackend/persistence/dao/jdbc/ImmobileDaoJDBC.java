@@ -127,11 +127,11 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Immobile immobile = new Immobile();
-                    immobile.setId(resultSet.getInt("id"));
+                    immobile.setId(String.valueOf(resultSet.getInt("id")));
                     immobile.setTipo(resultSet.getString("tipo"));
-                    immobile.setAffittoVendita(resultSet.getString("affitto_vendita"));
-                    immobile.setLuogo(resultSet.getString("luogo"));
-                    immobile.setPrezzo(resultSet.getBigDecimal("prezzo"));
+                    //immobile.setAffittoVendita(resultSet.getString("affitto_vendita"));
+                    //immobile.setLuogo(resultSet.getString("luogo"));
+                    //immobile.setPrezzo(resultSet.getBigDecimal("prezzo"));
                     // Aggiungi altri campi dell'oggetto Immobile
                     immobili.add(immobile);
                 }

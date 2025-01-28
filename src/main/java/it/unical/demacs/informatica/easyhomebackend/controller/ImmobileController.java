@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/immobili")
+@RequestMapping("/api")
 public class ImmobileController {
 
     private final IImmobileService immobileService;
@@ -17,12 +17,12 @@ public class ImmobileController {
         this.immobileService = immobileService;
     }
 
-    @RequestMapping(value = "/createImmobile", method = RequestMethod.POST)
+    @RequestMapping(value = "/auth/immobili/createImmobile", method = RequestMethod.POST)
     public ResponseEntity<Void> createImmobile(@RequestBody Immobile immobile) {
         this.immobileService.createImmobile(immobile);
         return ResponseEntity.ok().build();
     }
-    @RequestMapping(value = "/open/v1/immobili", method = RequestMethod.GET)
+    @RequestMapping(value = "/open/immobili", method = RequestMethod.GET)
     public ResponseEntity<List<Immobile>> getImmobili(
             @RequestParam(value = "tipo", required = false) String tipo,
             @RequestParam(value = "affittoVendita", required = false) String affittoVendita,

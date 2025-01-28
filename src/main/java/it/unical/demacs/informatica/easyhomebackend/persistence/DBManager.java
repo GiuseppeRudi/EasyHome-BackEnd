@@ -1,10 +1,10 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence;
 
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.ImmobileDaoJDBC;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.UserDaoJDBC;
+import lombok.Getter;
 
 import java.sql.*;
 
@@ -13,6 +13,7 @@ public class DBManager {
     private UserDao userDao = null;
     private ImmobileDao immobileDao = null;
     private static DBManager instance;
+    @Getter
     private Connection connection;
 
     private DBManager() {
@@ -24,7 +25,7 @@ public class DBManager {
             connection = DriverManager.getConnection(
                     "jdbc:postgresql://localhost:5432/EasyHome", // URL del database
                     "postgres", // Nome utente
-                    "rudi" // Password
+                    "postgres" // Password
             );
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -37,10 +38,6 @@ public class DBManager {
             instance = new DBManager();
         }
         return instance;
-    }
-
-    public Connection getConnection() {
-        return connection;
     }
 
     public UserDao getUserDao() {

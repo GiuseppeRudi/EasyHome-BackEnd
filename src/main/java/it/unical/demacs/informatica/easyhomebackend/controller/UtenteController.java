@@ -7,14 +7,13 @@ import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.service.IUserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/open/v1")
+@RequestMapping("/api/open")
 public class UtenteController {
 
     private final IUserService userService;
@@ -24,7 +23,6 @@ public class UtenteController {
     }
 
     @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
-
     public ResponseEntity<Void> createUser(@RequestBody Utente utente) {
         utente.setRole(UserRole.ROLE_USER);
         this.userService.createUser(utente);
