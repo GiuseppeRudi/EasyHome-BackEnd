@@ -1,7 +1,9 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence;
 
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
-
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.ImmobileDaoJDBC;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.UserDaoJDBC;
 
 import java.sql.*;
@@ -9,6 +11,7 @@ import java.sql.*;
 public class DBManager {
 
     private UserDao userDao = null;
+    private ImmobileDao immobileDao = null;
     private static DBManager instance;
     private Connection connection;
 
@@ -21,14 +24,13 @@ public class DBManager {
             connection = DriverManager.getConnection(
                     "jdbc:postgresql://localhost:5432/EasyHome", // URL del database
                     "postgres", // Nome utente
-                    "rudi" // Password
+                    "mirko" // Password
             );
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Errore durante la connessione al database", e);
         }
     }
-
 
     public static DBManager getInstance() {
         if (instance == null) {
@@ -41,18 +43,25 @@ public class DBManager {
         return connection;
     }
 
-    public UserDao getUserDao(){
+    public UserDao getUserDao() {
         if (userDao == null) {
             userDao = new UserDaoJDBC(getConnection());
         }
-        return  userDao;
+        return userDao;
     }
 
+    public ImmobileDao getImmobileDao() {
+        if (immobileDao == null) {
+            immobileDao = new ImmobileDaoJDBC(getConnection());
+        }
+        return immobileDao;
+    }
 
     public static void main(String[] args) {
         // Ottieni l'istanza del DBManager
         DBManager dbManager = DBManager.getInstance();
 
+        // Esegui una query di esempio su "utente"
         try (Connection con = dbManager.getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery("SELECT * FROM utente")) {
