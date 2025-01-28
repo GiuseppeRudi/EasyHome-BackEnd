@@ -49,6 +49,13 @@ public class ImmobileService implements IImmobileService {
     }
 
     @Override
+    public List<Immobile> getImmobiliFiltered(String tipo, String affittoVendita, String luogo) {
+        // Supponendo che tu stia usando JDBC o un repository, puoi costruire una query dinamica:
+        return immobileDao.findFiltered(tipo, affittoVendita, luogo);
+    }
+
+
+    @Override
     public Optional<Immobile> getImmobile(String id) {
         try {
             Immobile immobile = immobileDao.findByPrimaryKey(id);

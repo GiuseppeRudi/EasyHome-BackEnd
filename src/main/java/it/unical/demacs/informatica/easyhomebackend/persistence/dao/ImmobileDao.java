@@ -18,6 +18,8 @@ public interface ImmobileDao {
          */
         void save(Immobile immobile);
 
+        List<Immobile> findFiltered(String tipo, String affittoVendita, String luogo);
+
         /**
          * Cerca un immobile nel database utilizzando il suo ID.
          *

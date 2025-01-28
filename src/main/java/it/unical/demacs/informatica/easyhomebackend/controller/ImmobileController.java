@@ -22,10 +22,16 @@ public class ImmobileController {
         this.immobileService.createImmobile(immobile);
         return ResponseEntity.ok().build();
     }
-    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
-    public ResponseEntity<List<Immobile>> getAllImmobili() {
-        List<Immobile> immobili = this.immobileService.getAllImmobili();
+    @RequestMapping(value = "/open/v1/immobili", method = RequestMethod.GET)
+    public ResponseEntity<List<Immobile>> getImmobili(
+            @RequestParam(value = "tipo", required = false) String tipo,
+            @RequestParam(value = "affittoVendita", required = false) String affittoVendita,
+            @RequestParam(value = "luogo", required = false) String luogo) {
+
+        // Utilizza i parametri per filtrare i risultati
+        List<Immobile> immobili = this.immobileService.getImmobiliFiltered(tipo, affittoVendita, luogo);
         return ResponseEntity.ok(immobili);
     }
+
 
 }

@@ -9,6 +9,8 @@ public interface IImmobileService {
 
         Immobile createImmobile(Immobile immobile);
 
+        List<Immobile> getImmobiliFiltered(String tipo, String affittoVendita, String luogo);
+
         Optional<Immobile> getImmobile(String id);
 
         List<Immobile> getAllImmobili(); // Metodo per ottenere tutti gli immobili

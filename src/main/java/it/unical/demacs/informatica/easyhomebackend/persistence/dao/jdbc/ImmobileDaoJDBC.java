@@ -14,6 +14,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         this.connection = connection;
     }
 
+
     @Override
     public void save(Immobile immobile) {
         String query = "INSERT INTO immobili (id, descrizione, tipo, prezzo, mq, camere, bagni, anno, posizione) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -91,4 +92,55 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         }
         return immobili;
     }
+
+    @Override
+    public List<Immobile> findFiltered(String tipo, String affittoVendita, String luogo) {
+        List<Immobile> immobili = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT * FROM immobili WHERE 1=1");
+
+        // Costruzione dinamica della query con i parametri
+        if (tipo != null && !tipo.isEmpty()) {
+            query.append(" AND tipo = ?");
+        }
+        if (affittoVendita != null && !affittoVendita.isEmpty()) {
+            query.append(" AND affitto_vendita = ?");
+        }
+        if (luogo != null && !luogo.isEmpty()) {
+            query.append(" AND luogo = ?");
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
+            int index = 1;
+
+            // Impostazione dei parametri dinamici
+            if (tipo != null && !tipo.isEmpty()) {
+                statement.setString(index++, tipo);
+            }
+            if (affittoVendita != null && !affittoVendita.isEmpty()) {
+                statement.setString(index++, affittoVendita);
+            }
+            if (luogo != null && !luogo.isEmpty()) {
+                statement.setString(index++, luogo);
+            }
+
+            // Esecuzione della query
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Immobile immobile = new Immobile();
+                    immobile.setId(resultSet.getInt("id"));
+                    immobile.setTipo(resultSet.getString("tipo"));
+                    immobile.setAffittoVendita(resultSet.getString("affitto_vendita"));
+                    immobile.setLuogo(resultSet.getString("luogo"));
+                    immobile.setPrezzo(resultSet.getBigDecimal("prezzo"));
+                    // Aggiungi altri campi dell'oggetto Immobile
+                    immobili.add(immobile);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return immobili;
+    }
+
 }
