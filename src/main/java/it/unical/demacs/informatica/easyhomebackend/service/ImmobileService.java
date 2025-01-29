@@ -5,6 +5,7 @@ import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,15 +20,15 @@ public class ImmobileService implements IImmobileService {
     }
 
     @Override
-    public Immobile createImmobile(Immobile immobile) {
+    public Immobile createImmobile(List<byte[]> foto, String nome, String descrizione, String tipo, Double prezzo, Integer mq, Integer camere, Integer bagni, Integer anno, String etichetta, String posizione) {
         // Validazione dei campi obbligatori
-        if (immobile == null || immobile.getId() == null || immobile.getDescrizione() == null || immobile.getPrezzo() <= 0) {
+        if (nome == null || descrizione == null || prezzo <= 0) {
             throw new IllegalArgumentException("I dati dell'immobile non sono validi");
         }
 
         try {
             // Salvataggio dell'immobile
-            this.immobileDao.save(immobile);
+            this.immobileDao.save(foto,nome,descrizione,tipo,prezzo,mq,camere,bagni,anno,etichetta,posizione);
         } catch (Exception e) {
             // Gestione delle eccezioni
             e.printStackTrace();
@@ -35,7 +36,7 @@ public class ImmobileService implements IImmobileService {
         }
 
         // Recupera e restituisce l'immobile appena creato
-        return this.getImmobile(immobile.getId()).orElseThrow(() -> new RuntimeException("Immobile non trovato dopo il salvataggio"));
+        return this.getImmobile(nome).orElseThrow(() -> new RuntimeException("Immobile non trovato dopo il salvataggio"));
     }
 
     @Override

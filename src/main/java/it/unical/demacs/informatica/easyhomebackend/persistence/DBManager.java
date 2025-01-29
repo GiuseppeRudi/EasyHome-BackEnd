@@ -25,7 +25,7 @@ public class DBManager {
             connection = DriverManager.getConnection(
                     "jdbc:postgresql://localhost:5432/EasyHome", // URL del database
                     "postgres", // Nome utente
-                    "postgres" // Password
+                    "mirko" // Password
             );
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class DBManager {
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery("SELECT * FROM utente")) {
 
-            // Stampa i risultati della query
+            // Stampa i risultati della query per gli utenti
             while (rs.next()) {
                 System.out.println("ID: " + rs.getLong("id"));
                 System.out.println("Nome: " + rs.getString("nome"));
@@ -71,6 +71,20 @@ public class DBManager {
                 System.out.println("---------------");
             }
 
+            // Esegui una query di esempio su "immobili"
+            try (ResultSet rsImmobili = st.executeQuery("SELECT * FROM immobili")) {
+                // Stampa i risultati della query per gli immobili
+                while (rsImmobili.next()) {
+                    System.out.println("Nome Immobile: " + rsImmobili.getString("nome"));
+                    System.out.println("Tipo: " + rsImmobili.getString("tipo"));
+                    System.out.println("Prezzo: " + rsImmobili.getDouble("prezzo"));
+                    System.out.println("Mq: " + rsImmobili.getInt("mq"));
+                    System.out.println("Camere: " + rsImmobili.getInt("camere"));
+                    System.out.println("Anno: " + rsImmobili.getInt("anno"));
+                    System.out.println("Posizione: " + rsImmobili.getString("posizione"));
+                    System.out.println("---------------");
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Errore durante l'esecuzione della query", e);
