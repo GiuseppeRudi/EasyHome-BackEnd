@@ -41,10 +41,10 @@ public class ImmobileController {
     public ResponseEntity<List<Immobile>> getImmobili(
             @RequestParam(value = "tipo", required = false) String tipo,
             @RequestParam(value = "affittoVendita", required = false) String affittoVendita,
-            @RequestParam(value = "luogo", required = false) String luogo) {
+            @RequestParam(value = "luogo", required = false) String posizione) {
 
         // Utilizza i parametri per filtrare i risultati
-        List<Immobile> immobili = this.immobileService.getImmobiliFiltered(tipo, affittoVendita, luogo);
+        List<Immobile> immobili = this.immobileService.getImmobiliFiltered(tipo, affittoVendita, posizione);
         return ResponseEntity.ok(immobili);
     }
 
