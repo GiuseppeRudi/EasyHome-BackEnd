@@ -77,7 +77,7 @@ public class DBManager {
                 while (rsImmobili.next()) {
                     System.out.println("Nome Immobile: " + rsImmobili.getString("nome"));
                     System.out.println("Tipo: " + rsImmobili.getString("tipo"));
-                    System.out.println("Prezzo: " + rsImmobili.getDouble("prezzo"));
+                    System.out.println("Prezzo: " + rsImmobili.getInt("prezzo"));
                     System.out.println("Mq: " + rsImmobili.getInt("mq"));
                     System.out.println("Camere: " + rsImmobili.getInt("camere"));
                     System.out.println("Anno: " + rsImmobili.getInt("anno"));

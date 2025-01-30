@@ -20,15 +20,15 @@ public class ImmobileController {
 
     @RequestMapping(value = "/auth/immobili/createImmobile", method = RequestMethod.POST)
     public ResponseEntity<Void> createImmobile(
-            @RequestParam("foto") List<byte[]>  foto,
+            @RequestParam(value = "foto", required = false) List<MultipartFile> foto,
             @RequestParam("nome") String nome,
             @RequestParam("descrizione") String descrizione,
             @RequestParam("tipo") String tipo,
-            @RequestParam("prezzo") Double prezzo,
-            @RequestParam("mq") Integer mq,
-            @RequestParam("camere") Integer camere,
-            @RequestParam("bagni") Integer bagni,
-            @RequestParam("anno") Integer anno,
+            @RequestParam("prezzo") int prezzo,
+            @RequestParam("mq") int mq,
+            @RequestParam("camere") int camere,
+            @RequestParam("bagni") int bagni,
+            @RequestParam("anno") int anno,
             @RequestParam("etichetta") String etichetta,
             @RequestParam("posizione") String posizione) {
 

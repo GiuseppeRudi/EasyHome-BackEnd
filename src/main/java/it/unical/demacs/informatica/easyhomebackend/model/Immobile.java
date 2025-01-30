@@ -14,10 +14,10 @@ public class Immobile {
     private String nome;
     @Setter
     @Getter
-    private List<byte[]> foto;  // Modificato da String a byte[] per gestire i file
+    private List<MultipartFile>  foto;  // Modificato da String a byte[] per gestire i file
     private String descrizione;
     private String tipo;
-    private double prezzo;
+    private int prezzo;
     private int mq;
     private int camere;
     private int bagni;
@@ -29,7 +29,7 @@ public class Immobile {
     public Immobile() {
     }
 
-    public Immobile(int id, String nome, List<byte[]>  foto, String descrizione, String tipo, double prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione) {
+    public Immobile(int id, String nome, List<MultipartFile>  foto, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione) {
         this.nome = nome;
         this.id = id;
         this.foto = foto;  // Assegna il file come byte array

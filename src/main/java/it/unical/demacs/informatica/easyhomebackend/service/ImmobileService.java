@@ -3,7 +3,6 @@ package it.unical.demacs.informatica.easyhomebackend.service;
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,8 +19,9 @@ public class ImmobileService implements IImmobileService {
     }
 
     @Override
-    public Immobile createImmobile(List<byte[]> foto, String nome, String descrizione, String tipo, Double prezzo, Integer mq, Integer camere, Integer bagni, Integer anno, String etichetta, String posizione) {
+    public Immobile createImmobile(List<MultipartFile> foto, String nome, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione) {
         // Validazione dei campi obbligatori
+        System.out.println(foto + " " + nome + " " + descrizione + " " + tipo + " " + prezzo + " " + mq + " " + camere + " " + bagni+ " " + anno + " " + etichetta + " " + posizione);
         if (nome == null || descrizione == null || prezzo <= 0) {
             throw new IllegalArgumentException("I dati dell'immobile non sono validi");
         }

@@ -4,7 +4,6 @@ import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Interfaccia DAO per la gestione degli immobili.
@@ -16,7 +15,7 @@ public interface ImmobileDao {
          *
          * @throws IllegalArgumentException se l'immobile è null o contiene dati non validi
          */
-        void save(List<byte[]> foto, String nome, String descrizione, String tipo, Double prezzo, Integer mq, Integer camere, Integer bagni, Integer anno, String etichetta, String posizione);
+        void save(List<MultipartFile> foto, String nome, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione);
 
         List<Immobile> findFiltered(String tipo, String affittoVendita, String luogo);
 

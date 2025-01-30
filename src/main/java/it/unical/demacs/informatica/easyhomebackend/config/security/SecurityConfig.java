@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 
@@ -29,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/open/**").permitAll() // Accesso senza autenticazione
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN" ) // Accesso senza autenticazione
                         .requestMatchers("/api/auth/**").authenticated() // Richiede autenticazione
+
                         .anyRequest().authenticated() // Tutte le altre richieste richiedono autenticazione
                 )
                 .exceptionHandling(ex -> ex
@@ -66,7 +69,23 @@ public class SecurityConfig {
                         .logoutSuccessHandler((req, res, auth) -> res.setStatus(200)) // Gestione successo logout
                 );
 
+
         return http.build();
+    }
+
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("http://localhost:4200")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
     }
 
     @Bean

@@ -4,10 +4,13 @@ import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ImmobileDaoJDBC implements ImmobileDao {
@@ -36,27 +39,73 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     private Immobile createImm(ResultSet resultSet) throws SQLException {
 
+        List<MultipartFile> foto = new ArrayList<>();
 
-        List<byte[]> foto = new ArrayList<>();
         // Se hai una tabella immobile_foto per le foto
         String queryFoto = "SELECT foto FROM immobile_foto WHERE immobile_id = ?";
         try (PreparedStatement statementFoto = connection.prepareStatement(queryFoto)) {
             statementFoto.setInt(1, resultSet.getInt("id"));
             ResultSet rsFoto = statementFoto.executeQuery();
             while (rsFoto.next()) {
-                foto.add(rsFoto.getBytes("foto"));
+                byte[] fotoBytes = rsFoto.getBytes("foto");
+
+                // Converti byte[] in MultipartFile (questo passaggio è solo per simulare il file upload)
+                // Solitamente, questa parte avviene solo sul lato client, ma qui è un esempio di come puoi farlo
+                foto.add(new MultipartFile() {
+                    @Override
+                    public String getName() {
+                        return "foto"; // Puoi impostare il nome del file o lasciarlo generico
+                    }
+
+                    @Override
+                    public String getOriginalFilename() {
+                        return "foto_" + System.currentTimeMillis(); // Nome del file temporaneo
+                    }
+
+                    @Override
+                    public String getContentType() {
+                        return "image/jpeg"; // Puoi determinare il tipo di contenuto dal file
+                    }
+
+                    @Override
+                    public boolean isEmpty() {
+                        return fotoBytes.length == 0;
+                    }
+
+                    @Override
+                    public long getSize() {
+                        return fotoBytes.length;
+                    }
+
+                    @Override
+                    public byte[] getBytes() throws IOException {
+                        return fotoBytes;
+                    }
+
+                    @Override
+                    public InputStream getInputStream() throws IOException {
+                        return new ByteArrayInputStream(fotoBytes);
+                    }
+
+                    @Override
+                    public void transferTo(File dest) throws IOException, IllegalStateException {
+                        Files.write(dest.toPath(), fotoBytes); // Salva il file temporaneamente
+                    }
+                });
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Errore durante il recupero delle foto", e);
         }
+
+        // Creazione dell'oggetto Immobile con foto convertite
         return new Immobile(
                 resultSet.getInt("id"),
                 resultSet.getString("nome"),
-                foto,  // Qui è solo per un file, dovresti adattarlo per più file
+                foto,  // Adesso foto è una lista di MultipartFile
                 resultSet.getString("descrizione"),
                 resultSet.getString("tipo"),
-                resultSet.getDouble("prezzo"),
+                resultSet.getInt("prezzo"),
                 resultSet.getInt("mq"),
                 resultSet.getInt("camere"),
                 resultSet.getInt("bagni"),
@@ -65,6 +114,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 resultSet.getString("posizione")
         );
     }
+
 
     @Override
     public List<Immobile> findAll() {
@@ -132,7 +182,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
 
-    public void save(List<byte[]> foto, String nome, String descrizione, String tipo, Double prezzo, Integer mq, Integer camere, Integer bagni, Integer anno, String etichetta, String posizione) {
+    public void save(List<MultipartFile> foto, String nome, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione) {
         String queryImmobile = "INSERT INTO immobili (nome, descrizione, tipo, prezzo, mq, camere, bagni, anno, etichetta, posizione) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statementImmobile = connection.prepareStatement(queryImmobile, Statement.RETURN_GENERATED_KEYS)) {
             statementImmobile.setString(1, nome);
@@ -157,10 +207,5 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     }
 
 
-    // Metodo per convertire la lista di MultipartFile in array di byte
-    private List<byte[]> convertToByteArrays(List<byte[]> files) throws SQLException {
-        List<byte[]> byteArrayList = new ArrayList<>();
-        byteArrayList.addAll(files);
-        return byteArrayList;
-    }
+
 }
