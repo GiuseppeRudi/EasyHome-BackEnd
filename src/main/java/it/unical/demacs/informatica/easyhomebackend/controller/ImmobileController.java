@@ -29,10 +29,11 @@ public class ImmobileController {
             @RequestParam("bagni") int bagni,
             @RequestParam("anno") int anno,
             @RequestParam("etichetta") String etichetta,
+            @RequestParam("provincia") String provincia,
             @RequestParam("indirizzo") String indirizzo,
             @RequestParam(value = "foto", required = false) List<MultipartFile> foto) {
 
-        this.immobileService.createImmobile(nome,tipo,descrizione,categoria,prezzo,mq,camere,bagni,anno,etichetta, indirizzo,foto);
+        this.immobileService.createImmobile(nome,tipo,descrizione,categoria,prezzo,mq,camere,bagni,anno,etichetta, provincia, indirizzo,foto);
         return ResponseEntity.ok().build();
     }
 
@@ -40,11 +41,11 @@ public class ImmobileController {
     @RequestMapping(value = "/open/immobili", method = RequestMethod.GET)
     public ResponseEntity<List<Immobile>> getImmobili(
             @RequestParam(value = "tipo", required = false) String tipo,
-            @RequestParam(value = "affittoVendita", required = false) String categoria,
-            @RequestParam(value = "luogo", required = false) String posizione) {
+            @RequestParam(value = "categoria", required = false) String categoria,
+            @RequestParam(value = "provincia", required = false) String provincia) {
 
         // Utilizza i parametri per filtrare i risultati
-        List<Immobile> immobili = this.immobileService.getImmobiliFiltered(tipo, categoria, posizione);
+        List<Immobile> immobili = this.immobileService.getImmobiliFiltered(tipo, categoria, provincia);
         return ResponseEntity.ok(immobili);
     }
 

@@ -1,6 +1,7 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
+import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -111,6 +112,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 resultSet.getInt("bagni"),
                 resultSet.getInt("anno"),
                 resultSet.getString("etichetta"),
+                resultSet.getString("provincia"),
                 resultSet.getDouble("latitudine"),
                 resultSet.getDouble("longitudine"),
                 foto  // Adesso foto è una lista di MultipartFile
@@ -138,48 +140,53 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     }
 
     @Override
-    public List<Immobile> findFiltered(String tipo, String affittoVendita, String luogo) {
+    public List<Immobile> findFiltered(String tipo, String categoria, String provincia) {
         List<Immobile> immobili = new ArrayList<>();
-        StringBuilder query = new StringBuilder("SELECT * FROM immobili WHERE 1=1");
 
-        // Costruzione dinamica della query con i parametri
-        if (tipo != null && !tipo.isEmpty()) {
-            query.append(" AND tipo = ?");
-        }
-        if (affittoVendita != null && !affittoVendita.isEmpty()) {
-            query.append(" AND affitto_vendita = ?");
-        }
-        if (luogo != null && !luogo.isEmpty()) {
-            query.append(" AND luogo = ?");
-        }
+        // Query con parametri dinamici
+        String query = "SELECT * FROM immobili WHERE tipo = ? AND categoria = ? AND provincia = ?";
 
-        try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
-            int index = 1;
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 
-            // Impostazione dei parametri dinamici
-            if (tipo != null && !tipo.isEmpty()) {
-                statement.setString(index++, tipo);
-            }
-            if (affittoVendita != null && !affittoVendita.isEmpty()) {
-                statement.setString(index++, affittoVendita);
-            }
-            if (luogo != null && !luogo.isEmpty()) {
-                statement.setString(index++, luogo);
-            }
+            // Imposta i parametri
+            pstmt.setString(1, tipo);
+            pstmt.setString(2, categoria);
+            pstmt.setString(3, provincia);
 
-            // Esecuzione della query
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    Immobile immobile = createImm(resultSet);
+            // Esegui la query
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Immobile immobile = mapRowToImmobile(rs);
                     immobili.add(immobile);
                 }
             }
+
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante la ricerca filtrata degli immobili", e);
+            throw new RuntimeException("Errore durante l'esecuzione della query", e);
         }
 
         return immobili;
+    }
+
+    private Immobile mapRowToImmobile(ResultSet rs) throws SQLException {
+        Immobile immobile = new Immobile();
+        immobile.setId(rs.getInt("id"));
+        immobile.setNome(rs.getString("nome"));
+        immobile.setTipo(rs.getString("tipo"));
+        immobile.setDescrizione(rs.getString("descrizione"));
+        immobile.setCategoria(rs.getString("categoria"));
+        immobile.setPrezzo(rs.getInt("prezzo"));
+        immobile.setMq(rs.getInt("mq"));
+        immobile.setCamere(rs.getInt("camere"));
+        immobile.setBagni(rs.getInt("bagni"));
+        immobile.setAnno(rs.getInt("anno"));
+        immobile.setEtichetta(rs.getString("etichetta"));
+        immobile.setProvincia(rs.getString("provincia"));
+        immobile.setLatitudine(rs.getDouble("latitudine"));
+        immobile.setLongitudine(rs.getDouble("longitudine"));
+
+        // Aggiungi altri campi necessari
+        return immobile;
     }
 
     private void saveImmagini(int immobileId, List<MultipartFile> foto) throws SQLException, IOException {
@@ -194,8 +201,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     }
 
     @Override
-    public void save(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String indirizzo,List<MultipartFile> foto) {
-        String queryImmobile = "INSERT INTO immobili (nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, latitudine, longitudine) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void save(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta,String provincia, String indirizzo,List<MultipartFile> foto) {
+        String queryImmobile = "INSERT INTO immobili (nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statementImmobile = connection.prepareStatement(queryImmobile, Statement.RETURN_GENERATED_KEYS)) {
             statementImmobile.setString(1, nome);
             statementImmobile.setString(2, tipo);
@@ -207,8 +214,9 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statementImmobile.setInt(8, bagni);
             statementImmobile.setInt(9, anno);
             statementImmobile.setString(10, etichetta);
-            statementImmobile.setDouble(11, 34.65475677);
-            statementImmobile.setDouble(12, 56.56476563);
+            statementImmobile.setString(11, provincia);
+            statementImmobile.setDouble(12, 34.65475677);
+            statementImmobile.setDouble(13, 56.56476563);
 
             // Esegui l'update dell'immobile e ottieni l'ID generato
             int affectedRows = statementImmobile.executeUpdate();

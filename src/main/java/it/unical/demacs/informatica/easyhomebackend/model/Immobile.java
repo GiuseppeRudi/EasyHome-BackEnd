@@ -21,6 +21,7 @@ public class Immobile {
     private int bagni;
     private int anno;
     private String etichetta;
+    private String provincia;
     private double latitudine;
     private double longitudine;
     @Setter
@@ -31,7 +32,7 @@ public class Immobile {
     public Immobile() {
     }
 
-    public Immobile(int id, String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, double latitudine, double longitudine, List<MultipartFile>  foto) {
+    public Immobile(int id, String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String provincia, double latitudine, double longitudine, List<MultipartFile>  foto) {
         this.nome = nome;
         this.id = id;
         this.foto = foto;  // Assegna il file come byte array
@@ -44,9 +45,9 @@ public class Immobile {
         this.bagni = bagni;
         this.anno = anno;
         this.etichetta = etichetta;
+        this.provincia = provincia;
         this.latitudine = latitudine;
         this.longitudine = longitudine;
     }
-
 }
 

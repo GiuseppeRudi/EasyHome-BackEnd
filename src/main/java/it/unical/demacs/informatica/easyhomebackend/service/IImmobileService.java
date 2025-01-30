@@ -8,13 +8,11 @@ import java.util.Optional;
 
 public interface IImmobileService {
 
-        Immobile createImmobile(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String indirizzo, List<MultipartFile> foto);
+        Immobile createImmobile(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta,String provincia, String indirizzo, List<MultipartFile> foto);
 
-        List<Immobile> getImmobiliFiltered(String tipo, String affittoVendita, String luogo);
+        List<Immobile> getImmobiliFiltered(String tipo, String categoria, String provincia);
 
         Optional<Immobile> getImmobile(String id);
-
-        List<Immobile> getAllImmobili(); // Metodo per ottenere tutti gli immobili
     }
 
 

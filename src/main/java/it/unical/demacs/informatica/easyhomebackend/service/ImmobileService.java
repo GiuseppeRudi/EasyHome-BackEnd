@@ -19,7 +19,7 @@ public class ImmobileService implements IImmobileService {
     }
 
     @Override
-    public Immobile createImmobile(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String indirizzo,List<MultipartFile> foto){
+    public Immobile createImmobile(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String provincia, String indirizzo,List<MultipartFile> foto){
         // Validazione dei campi obbligatori
 
         if (nome == null || prezzo <= 0) {
@@ -28,7 +28,7 @@ public class ImmobileService implements IImmobileService {
 
         try {
             // Salvataggio dell'immobile
-            this.immobileDao.save(nome,tipo,descrizione,categoria,prezzo,mq,camere,bagni,anno,etichetta,indirizzo,foto);
+            this.immobileDao.save(nome,tipo,descrizione,categoria,prezzo,mq,camere,bagni,anno,etichetta,provincia,indirizzo,foto);
         } catch (Exception e) {
             // Gestione delle eccezioni
             e.printStackTrace();
@@ -40,19 +40,9 @@ public class ImmobileService implements IImmobileService {
     }
 
     @Override
-    public List<Immobile> getAllImmobili() {
-        try {
-            return this.immobileDao.findAll();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante il recupero degli immobili", e);
-        }
-    }
-
-    @Override
-    public List<Immobile> getImmobiliFiltered(String tipo, String affittoVendita, String luogo) {
+    public List<Immobile> getImmobiliFiltered(String tipo, String categoria, String provincia) {
         // Supponendo che tu stia usando JDBC o un repository, puoi costruire una query dinamica:
-        return immobileDao.findFiltered(tipo, affittoVendita, luogo);
+        return immobileDao.findFiltered(tipo, categoria, provincia);
     }
 
 
