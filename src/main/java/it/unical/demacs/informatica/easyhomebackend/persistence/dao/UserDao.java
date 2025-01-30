@@ -11,6 +11,4 @@ public interface UserDao {
     public void save(Utente utente);
 
 
-
-
 }

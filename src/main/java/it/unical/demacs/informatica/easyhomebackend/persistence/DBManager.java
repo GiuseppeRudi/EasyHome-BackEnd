@@ -1,8 +1,11 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence;
 
+import it.unical.demacs.informatica.easyhomebackend.model.Recensione;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.RecensioneDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.ImmobileDaoJDBC;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.RecensioneDaoJDBC;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.UserDaoJDBC;
 import lombok.Getter;
 
@@ -12,6 +15,7 @@ public class DBManager {
 
     private UserDao userDao = null;
     private ImmobileDao immobileDao = null;
+    private RecensioneDao recensioneDao = null;
     private static DBManager instance;
     @Getter
     private Connection connection;
@@ -54,40 +58,12 @@ public class DBManager {
         return immobileDao;
     }
 
-    public static void main(String[] args) {
-        // Ottieni l'istanza del DBManager
-        DBManager dbManager = DBManager.getInstance();
-
-        // Esegui una query di esempio su "utente"
-        try (Connection con = dbManager.getConnection();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("SELECT * FROM utente")) {
-
-            // Stampa i risultati della query per gli utenti
-            while (rs.next()) {
-                System.out.println("ID: " + rs.getLong("id"));
-                System.out.println("Nome: " + rs.getString("nome"));
-                System.out.println("Email: " + rs.getString("email"));
-                System.out.println("---------------");
-            }
-
-            // Esegui una query di esempio su "immobili"
-            try (ResultSet rsImmobili = st.executeQuery("SELECT * FROM immobili")) {
-                // Stampa i risultati della query per gli immobili
-                while (rsImmobili.next()) {
-                    System.out.println("Nome Immobile: " + rsImmobili.getString("nome"));
-                    System.out.println("Tipo: " + rsImmobili.getString("tipo"));
-                    System.out.println("Prezzo: " + rsImmobili.getInt("prezzo"));
-                    System.out.println("Mq: " + rsImmobili.getInt("mq"));
-                    System.out.println("Camere: " + rsImmobili.getInt("camere"));
-                    System.out.println("Anno: " + rsImmobili.getInt("anno"));
-                    System.out.println("Posizione: " + rsImmobili.getString("posizione"));
-                    System.out.println("---------------");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante l'esecuzione della query", e);
+    public RecensioneDao getRecensioneDao() {
+        if (recensioneDao == null) {
+            recensioneDao = new RecensioneDaoJDBC(getConnection());
         }
+        return recensioneDao;
     }
+
+
 }
