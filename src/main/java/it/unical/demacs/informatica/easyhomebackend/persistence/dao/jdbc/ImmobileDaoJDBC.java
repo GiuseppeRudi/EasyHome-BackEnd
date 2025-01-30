@@ -42,7 +42,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         List<MultipartFile> foto = new ArrayList<>();
 
         // Se hai una tabella immobile_foto per le foto
-        String queryFoto = "SELECT foto FROM immobile_foto WHERE immobile_id = ?";
+        String queryFoto = "SELECT foto FROM immagini WHERE immobile_id = ?";
         try (PreparedStatement statementFoto = connection.prepareStatement(queryFoto)) {
             statementFoto.setInt(1, resultSet.getInt("id"));
             ResultSet rsFoto = statementFoto.executeQuery();
@@ -180,8 +180,18 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         return immobili;
     }
 
-    @Override
+    private void saveImmagini(int immobileId, List<MultipartFile> foto) throws SQLException, IOException {
+        String queryFoto = "INSERT INTO immagini (immobile_id, foto) VALUES (?, ?)";
+        try (PreparedStatement fotoStatement = connection.prepareStatement(queryFoto)) {
+            for (MultipartFile file : foto) {
+                fotoStatement.setInt(1, immobileId); // Associa l'immobile all'immagine
+                fotoStatement.setBytes(2, file.getBytes()); // Converte l'immagine in byte[]
+                fotoStatement.executeUpdate(); // Salva l'immagine nel database
+            }
+        }
+    }
 
+    @Override
     public void save(List<MultipartFile> foto, String nome, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione) {
         String queryImmobile = "INSERT INTO immobili (nome, descrizione, tipo, prezzo, mq, camere, bagni, anno, etichetta, posizione) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statementImmobile = connection.prepareStatement(queryImmobile, Statement.RETURN_GENERATED_KEYS)) {
@@ -195,16 +205,31 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statementImmobile.setInt(8, anno);
             statementImmobile.setString(9, etichetta);
             statementImmobile.setString(10, posizione);
-            statementImmobile.executeUpdate();
+
+            // Esegui l'update dell'immobile e ottieni l'ID generato
+            int affectedRows = statementImmobile.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Inserimento immobile fallito, nessuna riga modificata.");
+            }
 
             // Recupera l'ID dell'immobile appena inserito
+            try (ResultSet rs = statementImmobile.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int immobileId = rs.getInt(1); // Recupera l'ID generato
 
+                    // Salva le immagini
+                    saveImmagini(immobileId, foto);
+                } else {
+                    throw new SQLException("Inserimento immobile fallito, nessun ID generato.");
+                }
+            }
 
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Errore durante il salvataggio dell'immobile", e);
         }
     }
+
 
 
 
