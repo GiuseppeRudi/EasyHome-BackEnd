@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface IImmobileService {
 
-        Immobile createImmobile(List<MultipartFile> foto, String nome, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione);
+        Immobile createImmobile(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String indirizzo, List<MultipartFile> foto);
 
         List<Immobile> getImmobiliFiltered(String tipo, String affittoVendita, String luogo);
 

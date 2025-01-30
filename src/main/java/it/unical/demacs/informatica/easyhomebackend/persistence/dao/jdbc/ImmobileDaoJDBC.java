@@ -102,16 +102,18 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         return new Immobile(
                 resultSet.getInt("id"),
                 resultSet.getString("nome"),
-                foto,  // Adesso foto è una lista di MultipartFile
-                resultSet.getString("descrizione"),
                 resultSet.getString("tipo"),
+                resultSet.getString("descrizione"),
+                resultSet.getString("categoria"),
                 resultSet.getInt("prezzo"),
                 resultSet.getInt("mq"),
                 resultSet.getInt("camere"),
                 resultSet.getInt("bagni"),
                 resultSet.getInt("anno"),
                 resultSet.getString("etichetta"),
-                resultSet.getString("posizione")
+                resultSet.getDouble("latitudine"),
+                resultSet.getDouble("longitudine"),
+                foto  // Adesso foto è una lista di MultipartFile
         );
     }
 
@@ -192,19 +194,21 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     }
 
     @Override
-    public void save(List<MultipartFile> foto, String nome, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione) {
-        String queryImmobile = "INSERT INTO immobili (nome, descrizione, tipo, prezzo, mq, camere, bagni, anno, etichetta, posizione) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void save(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String indirizzo,List<MultipartFile> foto) {
+        String queryImmobile = "INSERT INTO immobili (nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, latitudine, longitudine) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statementImmobile = connection.prepareStatement(queryImmobile, Statement.RETURN_GENERATED_KEYS)) {
             statementImmobile.setString(1, nome);
-            statementImmobile.setString(2, descrizione);
-            statementImmobile.setString(3, tipo);
-            statementImmobile.setDouble(4, prezzo);
-            statementImmobile.setInt(5, mq);
-            statementImmobile.setInt(6, camere);
-            statementImmobile.setInt(7, bagni);
-            statementImmobile.setInt(8, anno);
-            statementImmobile.setString(9, etichetta);
-            statementImmobile.setString(10, posizione);
+            statementImmobile.setString(2, tipo);
+            statementImmobile.setString(3, descrizione);
+            statementImmobile.setString(4, categoria);
+            statementImmobile.setDouble(5, prezzo);
+            statementImmobile.setInt(6, mq);
+            statementImmobile.setInt(7, camere);
+            statementImmobile.setInt(8, bagni);
+            statementImmobile.setInt(9, anno);
+            statementImmobile.setString(10, etichetta);
+            statementImmobile.setDouble(11, 34.65475677);
+            statementImmobile.setDouble(12, 56.56476563);
 
             // Esegui l'update dell'immobile e ottieni l'ID generato
             int affectedRows = statementImmobile.executeUpdate();
