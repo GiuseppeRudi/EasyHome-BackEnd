@@ -19,16 +19,16 @@ public class ImmobileService implements IImmobileService {
     }
 
     @Override
-    public Immobile createImmobile(List<MultipartFile> foto, String nome, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione) {
+    public Immobile createImmobile(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String indirizzo,List<MultipartFile> foto){
         // Validazione dei campi obbligatori
-        System.out.println(foto + " " + nome + " " + descrizione + " " + tipo + " " + prezzo + " " + mq + " " + camere + " " + bagni+ " " + anno + " " + etichetta + " " + posizione);
-        if (nome == null || descrizione == null || prezzo <= 0) {
+
+        if (nome == null || prezzo <= 0) {
             throw new IllegalArgumentException("I dati dell'immobile non sono validi");
         }
 
         try {
             // Salvataggio dell'immobile
-            this.immobileDao.save(foto,nome,descrizione,tipo,prezzo,mq,camere,bagni,anno,etichetta,posizione);
+            this.immobileDao.save(nome,tipo,descrizione,categoria,prezzo,mq,camere,bagni,anno,etichetta,indirizzo,foto);
         } catch (Exception e) {
             // Gestione delle eccezioni
             e.printStackTrace();

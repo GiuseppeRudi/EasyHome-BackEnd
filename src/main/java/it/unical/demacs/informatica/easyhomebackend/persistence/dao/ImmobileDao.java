@@ -15,7 +15,7 @@ public interface ImmobileDao {
          *
          * @throws IllegalArgumentException se l'immobile è null o contiene dati non validi
          */
-        void save(List<MultipartFile> foto, String nome, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione);
+        void save(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String indirizzo,List<MultipartFile> foto);
 
         List<Immobile> findFiltered(String tipo, String affittoVendita, String luogo);
 

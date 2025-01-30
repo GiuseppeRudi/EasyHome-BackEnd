@@ -12,28 +12,31 @@ import java.util.List;
 public class Immobile {
     private int id;
     private String nome;
-    @Setter
-    @Getter
-    private List<MultipartFile>  foto;  // Modificato da String a byte[] per gestire i file
-    private String descrizione;
     private String tipo;
+    private String descrizione;
+    private String categoria;
     private int prezzo;
     private int mq;
     private int camere;
     private int bagni;
     private int anno;
     private String etichetta;
-    private String posizione;
+    private double latitudine;
+    private double longitudine;
+    @Setter
+    @Getter
+    private List<MultipartFile>  foto;  // Modificato da String a byte[] per gestire i file
 
     // Costruttori, getter e setter
     public Immobile() {
     }
 
-    public Immobile(int id, String nome, List<MultipartFile>  foto, String descrizione, String tipo, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String posizione) {
+    public Immobile(int id, String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, double latitudine, double longitudine, List<MultipartFile>  foto) {
         this.nome = nome;
         this.id = id;
         this.foto = foto;  // Assegna il file come byte array
         this.descrizione = descrizione;
+        this.categoria=categoria;
         this.tipo = tipo;
         this.prezzo = prezzo;
         this.mq = mq;
@@ -41,7 +44,8 @@ public class Immobile {
         this.bagni = bagni;
         this.anno = anno;
         this.etichetta = etichetta;
-        this.posizione = posizione;
+        this.latitudine = latitudine;
+        this.longitudine = longitudine;
     }
 
 }
