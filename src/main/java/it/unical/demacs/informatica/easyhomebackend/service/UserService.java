@@ -40,6 +40,12 @@ public class UserService implements IUserService, UserDetailsService {
         Utente byPrimaryKey = this.userDao.findByPrimaryKey(username);
         return byPrimaryKey == null ? Optional.empty() : Optional.of(byPrimaryKey);
     }
+
+    @Override
+    public List<String> getAllUsernames() {
+        return userDao.findAllUsernames();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Utente> userOpt = this.getUser(username);

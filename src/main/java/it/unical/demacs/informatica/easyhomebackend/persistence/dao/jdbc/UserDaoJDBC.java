@@ -9,6 +9,8 @@ import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDaoJDBC  implements UserDao {
 
@@ -67,5 +69,24 @@ public class UserDaoJDBC  implements UserDao {
         }
 
 
+    }
+
+    @Override
+    public List<String> findAllUsernames() {
+        String sql = "SELECT username FROM utente";  // Query per ottenere tutti gli username
+        List<String> usernames = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = statement.executeQuery();
+
+            // Elenco di username dalla risposta del database
+            while (resultSet.next()) {
+                usernames.add(resultSet.getString("username"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return usernames;
     }
 }

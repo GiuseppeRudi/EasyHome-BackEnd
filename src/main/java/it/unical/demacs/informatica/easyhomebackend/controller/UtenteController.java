@@ -7,10 +7,9 @@ import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.service.IUserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/open")
@@ -29,5 +28,12 @@ public class UtenteController {
 
         return  ResponseEntity.ok().build();
     }
+
+    @RequestMapping(value = "/users" , method = RequestMethod.GET)
+    public List<String> getAllUsernames() {
+        return userService.getAllUsernames();
+    }
+
+
 
 }

@@ -29,7 +29,7 @@ public class DBManager {
             connection = DriverManager.getConnection(
                     "jdbc:postgresql://localhost:5432/EasyHome", // URL del database
                     "postgres", // Nome utente
-                    "postgres" // Password
+                    "rudi" // Password
             );
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
