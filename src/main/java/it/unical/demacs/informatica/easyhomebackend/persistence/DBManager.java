@@ -1,9 +1,11 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Recensione;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ContattiDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.RecensioneDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.ContattiDaoJDBC;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.ImmobileDaoJDBC;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.RecensioneDaoJDBC;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.UserDaoJDBC;
@@ -16,6 +18,7 @@ public class DBManager {
     private UserDao userDao = null;
     private ImmobileDao immobileDao = null;
     private RecensioneDao recensioneDao = null;
+    private ContattiDao contattiDao = null;
     private static DBManager instance;
     @Getter
     private Connection connection;
@@ -66,4 +69,10 @@ public class DBManager {
     }
 
 
+    public ContattiDao getContattiDao() {
+        if (contattiDao == null) {
+            contattiDao = new ContattiDaoJDBC(getConnection());
+        }
+        return contattiDao;
+    }
 }
