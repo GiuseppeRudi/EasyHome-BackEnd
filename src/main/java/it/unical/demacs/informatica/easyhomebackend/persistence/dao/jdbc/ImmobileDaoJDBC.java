@@ -234,6 +234,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 } else {
                     throw new SQLException("Inserimento immobile fallito, nessun ID generato.");
                 }
+
             }
 
         } catch (SQLException | IOException e) {
