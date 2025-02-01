@@ -24,18 +24,7 @@ public class UtenteController {
 
 
 
-    @DeleteMapping("/users/{username}")
-    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable String username) {
-        boolean isDeleted = userService.deleteUser(username);
-        Map<String, String> response = new HashMap<>();
-        if (isDeleted) {
-            response.put("message", "Utente eliminato con successo");
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("message", "Utente non trovato");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-    }
+
 
 
     public UtenteController(IUserService userService) {
