@@ -54,6 +54,7 @@ public class DBManager {
         return userDao;
     }
 
+
     public ImmobileDao getImmobileDao() {
         if (immobileDao == null) {
             immobileDao = new ImmobileDaoJDBC(getConnection());
