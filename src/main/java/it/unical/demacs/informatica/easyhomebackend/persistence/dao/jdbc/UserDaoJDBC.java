@@ -71,6 +71,23 @@ public class UserDaoJDBC  implements UserDao {
 
 
     }
+    @Override
+    public void delete(Utente utente) {
+        String query = "DELETE FROM utente WHERE username = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, utente.getUsername());
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected == 0) {
+                System.out.println("Nessun utente trovato con username: " + utente.getUsername());
+            } else {
+                System.out.println("Utente con username: " + utente.getUsername() + " eliminato con successo.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public List<UserRoleDto> findAllUsernamesAndRoles() {

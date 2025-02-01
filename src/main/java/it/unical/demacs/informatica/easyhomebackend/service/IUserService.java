@@ -12,7 +12,7 @@ public interface IUserService {
 
     Utente createUser(Utente utente);
 
-
+    public boolean deleteUser(String username);
     Optional<Utente> getUser(String username);
 
 

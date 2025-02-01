@@ -13,7 +13,7 @@ public interface UserDao {
     public Utente findByPrimaryKey(String username);
 
     public void save(Utente utente);
-
+    public void delete(Utente utente) ;
 
     List<UserRoleDto> findAllUsernamesAndRoles();
 
