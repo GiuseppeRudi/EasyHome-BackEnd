@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface IImmobileService {
 
-        Immobile createImmobile(Immobile nuovoImmobile, String indirizzo, List<MultipartFile> foto, String user) throws Exception;
+        Immobile createImmobile(Immobile nuovoImmobile, List<MultipartFile> foto, String user) throws Exception;
 
         List<Immobile> getImmobiliFiltered(String tipo, String categoria, String provincia);
 

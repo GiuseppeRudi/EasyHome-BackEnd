@@ -25,6 +25,6 @@ public class UtenteProxy extends Utente {
             super.setImmobili(immobiliCaricati);
             immobiliLoaded = true;
         }
-        return super.getImmobili();
+        return immobili;
     }
 }

@@ -35,9 +35,11 @@ public class ImmobileController {
         nuovoImmobile.setAnno(immobileDto.getAnno());
         nuovoImmobile.setEtichetta(immobileDto.getEtichetta());
         nuovoImmobile.setProvincia(immobileDto.getProvincia());
+        nuovoImmobile.setLatitudine(immobileDto.getLatitudine());
+        nuovoImmobile.setLongitudine(immobileDto.getLongitudine());
         nuovoImmobile.setFotoPaths(new ArrayList<>());
 
-        this.immobileService.createImmobile(nuovoImmobile,immobileDto.getIndirizzo(),immobileDto.getFoto(),immobileDto.getUser());
+        this.immobileService.createImmobile(nuovoImmobile,immobileDto.getFoto(),immobileDto.getUser());
         return ResponseEntity.ok().build();
     }
 

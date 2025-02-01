@@ -68,7 +68,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     @Override
     public List<Immobile> findAll() {
         List<Immobile> immobili = new ArrayList<>();
-        String query = "SELECT * FROM immobili";
+        String query = "SELECT * FROM immobile";
 
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
@@ -87,6 +87,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     @Override
     public List<Immobile> findFiltered(String tipo, String categoria, String provincia) {
         List<Immobile> immobili = new ArrayList<>();
+
 
         String query = "SELECT * FROM immobili";
 
@@ -200,8 +201,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statementImmobile.setInt(10, immobile.getAnno());
             statementImmobile.setString(11, immobile.getEtichetta());
             statementImmobile.setString(12, immobile.getProvincia());
-            statementImmobile.setDouble(13, 34.65475677);
-            statementImmobile.setDouble(14, 56.56476563);
+            statementImmobile.setDouble(13, immobile.getLatitudine());
+            statementImmobile.setDouble(14, immobile.getLongitudine());
             List<String> imagesPaths = immobile.getFotoPaths();
             Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
             statementImmobile.setArray(15, sqlArray);
