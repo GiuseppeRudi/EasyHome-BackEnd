@@ -1,6 +1,7 @@
 package it.unical.demacs.informatica.easyhomebackend.controller;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
+import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.ImmobileDto;
 import it.unical.demacs.informatica.easyhomebackend.service.IImmobileService;
 import it.unical.demacs.informatica.easyhomebackend.service.ImmobileService;
@@ -42,15 +43,16 @@ public class ImmobileController {
 
 
     @RequestMapping(value = "/open/immobili", method = RequestMethod.GET)
-    public ResponseEntity<List<Immobile>> getImmobili(
+    public ResponseEntity<List<ImmobileMinimal>> getImmobili(
             @RequestParam(value = "tipo", required = false) String tipo,
             @RequestParam(value = "categoria", required = false) String categoria,
             @RequestParam(value = "provincia", required = false) String provincia) {
 
         // Utilizza i parametri per filtrare i risultati
-        List<Immobile> immobili = this.immobileService.getImmobiliFiltered(tipo, categoria, provincia);
-        return ResponseEntity.ok(immobili);
-    }
+        List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliFilteredMinimal(tipo,categoria,provincia);
 
+        System.out.println(immobiliMinimal);
+        return ResponseEntity.ok(immobiliMinimal);
+    }
 
 }

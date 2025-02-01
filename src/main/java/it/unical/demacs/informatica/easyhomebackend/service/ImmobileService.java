@@ -1,6 +1,7 @@
 package it.unical.demacs.informatica.easyhomebackend.service;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
+import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import org.springframework.stereotype.Service;
@@ -92,5 +93,10 @@ public class ImmobileService implements IImmobileService {
             e.printStackTrace();
             throw new RuntimeException("Errore durante il recupero dell'immobile", e);
         }
+    }
+
+    @Override
+    public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
+        return immobileDao.getImmobiliFilteredMinimal(tipo, categoria, provincia);
     }
 }

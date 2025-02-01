@@ -1,6 +1,7 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence.dao;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
+import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 
 import java.util.List;
 
@@ -35,4 +36,6 @@ public interface ImmobileDao {
          * @return una lista di immobili
          */
         List<Immobile> findAll();
+
+    List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia);
 }

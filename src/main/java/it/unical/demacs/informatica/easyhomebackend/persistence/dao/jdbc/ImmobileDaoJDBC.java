@@ -1,10 +1,8 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
-import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
-import it.unical.demacs.informatica.easyhomebackend.model.Utente;
+import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.proxy.UtenteProxy;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -247,4 +245,59 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         }
         return immobili;
     }
+
+
+    @Override
+    public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
+        List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
+
+        String query = "SELECT nome, prezzo, tipo, categoria, mq, " +
+                "CASE WHEN array_length(immagini, 1) > 0 THEN immagini[1] ELSE NULL END AS immagine " +
+                "FROM immobili";
+
+        List<String> conditions = new ArrayList<>();
+
+        if (!Objects.equals(tipo, "Tutti")) conditions.add("tipo = ?");
+        if (!Objects.equals(categoria, "Tutti")) conditions.add("categoria = ?");
+        if (!Objects.equals(provincia, "Tutte")) conditions.add("provincia = ?");
+
+        if (!conditions.isEmpty()) {
+            query += " WHERE " + String.join(" AND ", conditions);
+        }
+
+        System.out.println("SQL Query: " + query);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            int paramIndex = 1;
+            if (!Objects.equals(tipo, "Tutti")) {
+                pstmt.setString(paramIndex++, tipo);
+            }
+            if (!Objects.equals(categoria, "Tutti")) {
+                pstmt.setString(paramIndex++, categoria);
+            }
+            if (!Objects.equals(provincia, "Tutte")) {
+                pstmt.setString(paramIndex++, provincia);
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String nome = rs.getString("nome");
+                    int prezzo = rs.getInt("prezzo");
+                    String tipoImmobile = rs.getString("tipo");
+                    String categoriaImmobile = rs.getString("categoria");
+                    int mq = rs.getInt("mq");
+                    String immagine = rs.getString("immagine");
+
+                    immobiliMinimal.add(new ImmobileMinimal(nome, prezzo, tipoImmobile, categoriaImmobile, mq, immagine));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante l'esecuzione della query", e);
+        }
+
+        return immobiliMinimal;
+    }
+
+
+
 }

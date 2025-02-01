@@ -1,6 +1,7 @@
 package it.unical.demacs.informatica.easyhomebackend.service;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
+import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.ImmobileDto;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +15,9 @@ public interface IImmobileService {
         List<Immobile> getImmobiliFiltered(String tipo, String categoria, String provincia);
 
         Optional<Immobile> getImmobile(int id);
-    }
+
+        List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia);
+
+}
 
 
