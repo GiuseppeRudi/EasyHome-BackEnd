@@ -23,7 +23,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public Immobile findByPrimaryKey(int id) {
-        String query = "SELECT * FROM immobile WHERE id = ?";
+        String query = "SELECT * FROM immobili WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -90,7 +90,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     public List<Immobile> findFiltered(String tipo, String categoria, String provincia) {
         List<Immobile> immobili = new ArrayList<>();
 
-        String query = "SELECT * FROM immobile";
+
+        String query = "SELECT * FROM immobili";
 
         List<String> conditions = new ArrayList<>();
 
@@ -166,7 +167,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public void save(Immobile immobile, String user) {
-        String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine, immagini, venditore) " +
+        String queryImmobile = "INSERT INTO immobili (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine, immagini, venditore) " +
                 "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON CONFLICT (id) DO UPDATE SET " +
                 "nome=EXCLUDED.nome, " +
@@ -232,7 +233,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public List<Immobile> findByUserId(String username) {
-        String sql = "SELECT * FROM immobile WHERE venditore = ?";
+        String sql = "SELECT * FROM immobili WHERE venditore = ?";
         List<Immobile> immobili = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
