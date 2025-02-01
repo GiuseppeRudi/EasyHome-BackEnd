@@ -6,6 +6,7 @@ import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -60,5 +61,20 @@ public class UserService implements IUserService, UserDetailsService {
                 List.of(new SimpleGrantedAuthority(user.getRole().name())) // Correzione qui: mappa il ruolo direttamente
         );
     }
+    public boolean deleteUser(String username) {
+        Utente user = userDao.findByPrimaryKey(username); // Cerca l'utente per username
+        if (user != null) {
+            try {
+                userDao.delete(user); // Elimina l'utente dal database
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false; // In caso di errore durante l'eliminazione
+            }
+        }
+        return false; // Utente non trovato
+    }
+
+
 
 }

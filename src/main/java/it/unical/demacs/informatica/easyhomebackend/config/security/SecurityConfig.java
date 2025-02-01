@@ -28,9 +28,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disabilita CSRF
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/api/login").permitAll() // Accesso senza autenticazione
                         .requestMatchers("/api/open/**").permitAll() // Accesso senza autenticazione
-                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN" ) // Accesso senza autenticazione
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN" )// Accesso senza autenticazione
                         .requestMatchers("/api/auth/**").authenticated() // Richiede autenticazione
                         .anyRequest().authenticated() // Tutte le altre richieste richiedono autenticazione
                 )
