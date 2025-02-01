@@ -5,6 +5,7 @@ package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -72,21 +73,43 @@ public class UserDaoJDBC  implements UserDao {
     }
 
     @Override
-    public List<String> findAllUsernames() {
-        String sql = "SELECT username FROM utente";  // Query per ottenere tutti gli username
-        List<String> usernames = new ArrayList<>();
+    public List<UserRoleDto> findAllUsernamesAndRoles() {
+        String sql = "SELECT username, role FROM utente";  // Query per ottenere username e ruolo
+        List<UserRoleDto> userList = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
 
-            // Elenco di username dalla risposta del database
+            // Elenco di username e ruolo dalla risposta del database
             while (resultSet.next()) {
-                usernames.add(resultSet.getString("username"));
+                String username = resultSet.getString("username");
+                String role = resultSet.getString("role");
+                userList.add(new UserRoleDto(username, UserRole.valueOf(role)));  // Crea oggetti UserRoleDto
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return usernames;
+        return userList;
     }
+
+    @Override
+    public void changeUserRole(String username, UserRole newRole) {
+        String sql = "UPDATE utente SET role = ? WHERE username = ?"; // Query per aggiornare il ruolo
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, newRole.name()); // Converte l'enum UserRole in stringa
+            statement.setString(2, username);
+
+            int rowsUpdated = statement.executeUpdate(); // Esegue l'aggiornamento
+
+            if (rowsUpdated == 0) {
+                System.out.println("Nessun utente trovato con username: " + username);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

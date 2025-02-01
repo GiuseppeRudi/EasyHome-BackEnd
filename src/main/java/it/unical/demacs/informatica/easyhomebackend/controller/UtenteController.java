@@ -5,6 +5,7 @@ package it.unical.demacs.informatica.easyhomebackend.controller;
 
 import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 import it.unical.demacs.informatica.easyhomebackend.service.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,11 +33,11 @@ public class UtenteController {
         return  ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/users" , method = RequestMethod.GET)
-    public List<String> getAllUsernames() {
-        return userService.getAllUsernames();
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public List<UserRoleDto> getAllUsers() {
+        List<UserRoleDto> users = userService.getAllUsernamesAndRoles();  // Usa il nuovo metodo
+        return users;  // Restituisci la lista con username e ruolo
     }
-
 
 
 }
