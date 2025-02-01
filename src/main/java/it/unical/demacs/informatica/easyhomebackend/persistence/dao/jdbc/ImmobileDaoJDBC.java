@@ -23,7 +23,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public Immobile findByPrimaryKey(int id) {
-        String query = "SELECT * FROM immobili WHERE id = ?";
+        String query = "SELECT * FROM immobile WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -70,7 +70,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     @Override
     public List<Immobile> findAll() {
         List<Immobile> immobili = new ArrayList<>();
-        String query = "SELECT * FROM immobili";
+        String query = "SELECT * FROM immobile";
 
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
@@ -90,7 +90,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     public List<Immobile> findFiltered(String tipo, String categoria, String provincia) {
         List<Immobile> immobili = new ArrayList<>();
 
-        String query = "SELECT * FROM immobili";
+        String query = "SELECT * FROM immobile";
 
         List<String> conditions = new ArrayList<>();
 
@@ -166,7 +166,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public void save(Immobile immobile, String user) {
-        String queryImmobile = "INSERT INTO immobili (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine, immagini, venditore) " +
+        String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine, immagini, venditore) " +
                 "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON CONFLICT (id) DO UPDATE SET " +
                 "nome=EXCLUDED.nome, " +
@@ -202,8 +202,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statementImmobile.setInt(10, immobile.getAnno());
             statementImmobile.setString(11, immobile.getEtichetta());
             statementImmobile.setString(12, immobile.getProvincia());
-            statementImmobile.setDouble(13, 34.65475677);
-            statementImmobile.setDouble(14, 56.56476563);
+            statementImmobile.setDouble(13, immobile.getLatitudine());
+            statementImmobile.setDouble(14, immobile.getLongitudine());
             List<String> imagesPaths = immobile.getFotoPaths();
             Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
             statementImmobile.setArray(15, sqlArray);
@@ -232,7 +232,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public List<Immobile> findByUserId(String username) {
-        String sql = "SELECT * FROM immobili WHERE venditore = ?";
+        String sql = "SELECT * FROM immobile WHERE venditore = ?";
         List<Immobile> immobili = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);

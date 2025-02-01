@@ -24,7 +24,7 @@ public class ImmobileService implements IImmobileService {
     }
 
     @Override
-    public Immobile createImmobile(Immobile immobile, String indirizzo, List<MultipartFile> foto, String user) throws Exception {
+    public Immobile createImmobile(Immobile immobile, List<MultipartFile> foto, String user) throws Exception {
         // Validazione dei campi obbligatori
 
         if (immobile.getNome() == null || immobile.getPrezzo() <= 0) {

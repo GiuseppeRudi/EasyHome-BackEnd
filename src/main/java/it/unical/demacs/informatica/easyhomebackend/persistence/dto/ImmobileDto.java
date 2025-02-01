@@ -19,7 +19,8 @@ public class ImmobileDto {
     private int anno;
     private String etichetta;
     private String provincia;
-    private String indirizzo;
+    private double latitudine;
+    private double longitudine;
     private List<MultipartFile> foto;
     private String user;
 
