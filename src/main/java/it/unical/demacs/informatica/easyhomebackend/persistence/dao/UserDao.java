@@ -6,9 +6,11 @@ import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 public interface UserDao {
 
 
-    public Utente findByPrimaryKey(String username);
+    Utente findByPrimaryKey(String username);
 
-    public void save(Utente utente);
+    void save(Utente utente);
+    void update(Utente utente);
+    void deleteByUsername(String username);
 
 
 }

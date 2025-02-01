@@ -1,13 +1,14 @@
 package it.unical.demacs.informatica.easyhomebackend.controller;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.ImmobileDto;
 import it.unical.demacs.informatica.easyhomebackend.service.IImmobileService;
 import it.unical.demacs.informatica.easyhomebackend.service.ImmobileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
@@ -19,21 +20,23 @@ public class ImmobileController {
 
     @RequestMapping(value = "/auth/immobili/createImmobile", method = RequestMethod.POST)
     public ResponseEntity<Void> createImmobile(
-            @RequestParam("nome") String nome,
-            @RequestParam("tipo") String tipo,
-            @RequestParam("descrizione") String descrizione,
-            @RequestParam("categoria") String categoria,
-            @RequestParam("prezzo") int prezzo,
-            @RequestParam("mq") int mq,
-            @RequestParam("camere") int camere,
-            @RequestParam("bagni") int bagni,
-            @RequestParam("anno") int anno,
-            @RequestParam("etichetta") String etichetta,
-            @RequestParam("provincia") String provincia,
-            @RequestParam("indirizzo") String indirizzo,
-            @RequestParam(value = "foto", required = false) List<MultipartFile> foto) {
+            @ModelAttribute ImmobileDto immobileDto) throws Exception {
+        Immobile nuovoImmobile = new Immobile();
+        nuovoImmobile.setId(null);
+        nuovoImmobile.setNome(immobileDto.getNome());
+        nuovoImmobile.setTipo(immobileDto.getTipo());
+        nuovoImmobile.setDescrizione(immobileDto.getDescrizione());
+        nuovoImmobile.setCategoria(immobileDto.getCategoria());
+        nuovoImmobile.setPrezzo(immobileDto.getPrezzo());
+        nuovoImmobile.setMq(immobileDto.getMq());
+        nuovoImmobile.setCamere(immobileDto.getCamere());
+        nuovoImmobile.setBagni(immobileDto.getBagni());
+        nuovoImmobile.setAnno(immobileDto.getAnno());
+        nuovoImmobile.setEtichetta(immobileDto.getEtichetta());
+        nuovoImmobile.setProvincia(immobileDto.getProvincia());
+        nuovoImmobile.setFotoPaths(new ArrayList<>());
 
-        this.immobileService.createImmobile(nome,tipo,descrizione,categoria,prezzo,mq,camere,bagni,anno,etichetta, provincia, indirizzo,foto);
+        this.immobileService.createImmobile(nuovoImmobile,immobileDto.getIndirizzo(),immobileDto.getFoto(),immobileDto.getUser());
         return ResponseEntity.ok().build();
     }
 

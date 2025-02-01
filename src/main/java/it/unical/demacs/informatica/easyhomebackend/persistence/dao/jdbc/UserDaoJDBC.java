@@ -4,53 +4,54 @@ package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 
 import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.proxy.UtenteProxy;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDaoJDBC  implements UserDao {
 
-
     Connection connection;
+    private final ImmobileDao immobileDao;
 
 
-    public UserDaoJDBC(Connection connection) {
+    public UserDaoJDBC(Connection connection, ImmobileDao immobileDao) {
         this.connection = connection;
+        this.immobileDao = immobileDao;
     }
 
     @Override
     public Utente findByPrimaryKey(String username) {
-
-        String query = "SELECT username, password , role, nome, cognome, data_nascita, nazionalita, email FROM utente WHERE username = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                return new Utente(
-                        resultSet.getString("username"),
-                        resultSet.getString("password"),
-                        UserRole.valueOf(resultSet.getString("role")),
-                        resultSet.getString("nome"),
-                        resultSet.getString("cognome"),
-                        resultSet.getString("data_nascita"),
-                        resultSet.getString("nazionalita"),
-                        resultSet.getString("email")
+        String sql = "SELECT * FROM utente WHERE username = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new UtenteProxy(
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        UserRole.valueOf(rs.getString("role")),
+                        rs.getString("nome"),
+                        rs.getString("cognome"),
+                        rs.getString("data_nascita"),
+                        rs.getString("nazionalita"),
+                        rs.getString("email"),
+                        immobileDao
                 );
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            throw new UsernameNotFoundException("Utente non trovato");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return null;
-
     }
 
     @Override
     public void save(Utente utente) {
-
-
         String query = "INSERT INTO utente (username, password , role,nome,cognome, data_nascita, nazionalita, email) VALUES (?, ? , ?, ?, ?, ?, ?,?) " ;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, utente.getUsername());
@@ -65,7 +66,15 @@ public class UserDaoJDBC  implements UserDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public void update(Utente utente) {
+
+    }
+
+    @Override
+    public void deleteByUsername(String username) {
 
     }
 }

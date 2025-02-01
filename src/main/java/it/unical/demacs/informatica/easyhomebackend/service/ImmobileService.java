@@ -6,6 +6,11 @@ import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,35 +24,67 @@ public class ImmobileService implements IImmobileService {
     }
 
     @Override
-    public Immobile createImmobile(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String provincia, String indirizzo,List<MultipartFile> foto){
+    public Immobile createImmobile(Immobile immobile, String indirizzo, List<MultipartFile> foto, String user) throws Exception {
         // Validazione dei campi obbligatori
 
-        if (nome == null || prezzo <= 0) {
+        if (immobile.getNome() == null || immobile.getPrezzo() <= 0) {
             throw new IllegalArgumentException("I dati dell'immobile non sono validi");
         }
-
         try {
             // Salvataggio dell'immobile
-            this.immobileDao.save(nome,tipo,descrizione,categoria,prezzo,mq,camere,bagni,anno,etichetta,provincia,indirizzo,foto);
+            this.immobileDao.save(immobile,user);
         } catch (Exception e) {
             // Gestione delle eccezioni
             e.printStackTrace();
             throw new RuntimeException("Errore durante il salvataggio dell'immobile", e);
         }
+        Optional<Immobile> savedImmobile = getImmobile(immobile.getId());
+        if (savedImmobile.isPresent()) {
+            saveImmagini(savedImmobile.get(), foto);
+            immobileDao.save(savedImmobile.get(), user);
+        }
 
         // Recupera e restituisce l'immobile appena creato
-        return this.getImmobile(nome).orElseThrow(() -> new RuntimeException("Immobile non trovato dopo il salvataggio"));
+        return savedImmobile.orElseThrow(() -> new RuntimeException("Immobile non trovato dopo il salvataggio"));
+    }
+
+    private static final String immobiliImagesDir = "immobiliImages/";
+
+    private void saveImmagini(Immobile immobile, List<MultipartFile> foto) throws Exception {
+        int immobileDir = immobile.getId();
+        File directory = new File(immobiliImagesDir + immobileDir);
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new Exception("Could not create directory");
+        }
+        deleteExistingFiles(directory.listFiles());
+        List<String> immagini = new ArrayList<>();
+        for (MultipartFile f : foto) {
+            String fileName = f.getOriginalFilename();
+            Path path = Path.of(immobiliImagesDir + immobileDir, fileName);
+            Files.copy(f.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            immagini.add(immobiliImagesDir + immobileDir + "/" + fileName);
+        }
+        immobile.setFotoPaths(immagini);
+    }
+
+    private void deleteExistingFiles(File[] existingFiles) throws Exception {
+        if (existingFiles != null) {
+            for (File existingFile : existingFiles) {
+                if (!existingFile.delete()) {
+                    throw new Exception("Could not delete existing file: " + existingFile.getName());
+                }
+            }
+        }
     }
 
     @Override
     public List<Immobile> getImmobiliFiltered(String tipo, String categoria, String provincia) {
-        // Supponendo che tu stia usando JDBC o un repository, puoi costruire una query dinamica:
         return immobileDao.findFiltered(tipo, categoria, provincia);
     }
 
 
     @Override
-    public Optional<Immobile> getImmobile(String id) {
+    public Optional<Immobile> getImmobile(int id) {
         try {
             Immobile immobile = immobileDao.findByPrimaryKey(id);
             return Optional.ofNullable(immobile);
