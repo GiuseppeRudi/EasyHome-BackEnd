@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface IUserService {
 
-    Utente createUser(Utente utente);
+    void createUser(Utente utente);
 
     public boolean deleteUser(String username);
     Optional<Utente> getUser(String username);

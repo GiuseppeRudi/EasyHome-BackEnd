@@ -31,17 +31,17 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public Utente createUser(Utente utente) {
+    public void createUser(Utente utente) {
         // TODO checks: fields are not null, password complexity, username not already used
         this.userDao.save(new Utente(utente.getUsername(), passwordEncoder.encode(utente.getPassword()), utente.getRole(),utente.getNome(),utente.getCognome(),utente.getData_nascita(),utente.getNazionalita(),utente.getEmail()));
-        return this.getUser(utente.getUsername()).get();
+        this.getUser(utente.getUsername()).get();
     }
 
     @Override
     public Optional<Utente> getUser(String username) {
-        Utente byPrimaryKey = this.userDao.findByPrimaryKey(username);
-        return byPrimaryKey == null ? Optional.empty() : Optional.of(byPrimaryKey);
+        return Optional.ofNullable(this.userDao.findByPrimaryKey(username));
     }
+
 
 
 

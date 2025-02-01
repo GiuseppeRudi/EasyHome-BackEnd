@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.time.LocalDate;
 
 
 @NoArgsConstructor
@@ -26,6 +25,9 @@ public class Utente implements UserDetails {
 //    private String comune_di_nascita;
     private String nazionalita;
     private String email;
+    protected List<Immobile> immobili;
+
+
 
 
     public Utente(String username, String password, UserRole role, String nome,String cognome,String data_nascita,String nazionalita, String email) {

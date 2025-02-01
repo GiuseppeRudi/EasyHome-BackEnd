@@ -10,10 +10,12 @@ import java.util.List;
 public interface UserDao {
 
 
-    public Utente findByPrimaryKey(String username);
+    Utente findByPrimaryKey(String username);
 
-    public void save(Utente utente);
-    public void delete(Utente utente) ;
+    void save(Utente utente);
+    void delete(Utente utente) ;
+    void update(Utente utente);
+
 
     List<UserRoleDto> findAllUsernamesAndRoles();
 

@@ -1,7 +1,6 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence.dao;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,9 +14,10 @@ public interface ImmobileDao {
          *
          * @throws IllegalArgumentException se l'immobile è null o contiene dati non validi
          */
-        void save(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta,String provincia, String indirizzo,List<MultipartFile> foto);
+        void save(Immobile immobile, String user);
 
         List<Immobile> findFiltered(String tipo, String categoria, String provincia);
+        List<byte[]> getImmagini(Integer id) throws Exception;
 
         /**
          * Cerca un immobile nel database utilizzando il suo ID.
@@ -25,7 +25,9 @@ public interface ImmobileDao {
          * @param id l'ID dell'immobile da cercare
          * @return un Optional contenente l'immobile se trovato, altrimenti vuoto
          */
-        Immobile findByPrimaryKey(String id);
+        Immobile findByPrimaryKey(int id);
+
+        List<Immobile> findByUserId(String username);
 
         /**
          * Restituisce tutti gli immobili presenti nel database.

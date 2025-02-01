@@ -1,16 +1,14 @@
 package it.unical.demacs.informatica.easyhomebackend.model;
 
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.Serial;
 import java.util.List;
 
 @Getter
 @Setter
 @ToString
 public class Immobile {
-    private int id;
+    private Integer id;
     private String nome;
     private String tipo;
     private String descrizione;
@@ -26,16 +24,18 @@ public class Immobile {
     private double longitudine;
     @Setter
     @Getter
-    private List<MultipartFile>  foto;  // Modificato da String a byte[] per gestire i file
+    private List<String> fotoPaths;
+    private List<byte[]> foto;
+    private Utente utente;
 
     // Costruttori, getter e setter
     public Immobile() {
     }
 
-    public Immobile(int id, String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String provincia, double latitudine, double longitudine, List<MultipartFile>  foto) {
+    public Immobile(int id, String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String provincia, double latitudine, double longitudine, List<String> fotoPaths) {
         this.nome = nome;
         this.id = id;
-        this.foto = foto;  // Assegna il file come byte array
+        this.fotoPaths = fotoPaths;  // Assegna il file come byte array
         this.descrizione = descrizione;
         this.categoria=categoria;
         this.tipo = tipo;

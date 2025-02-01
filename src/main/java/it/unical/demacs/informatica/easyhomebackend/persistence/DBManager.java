@@ -49,7 +49,7 @@ public class DBManager {
 
     public UserDao getUserDao() {
         if (userDao == null) {
-            userDao = new UserDaoJDBC(getConnection());
+            userDao = new UserDaoJDBC(getConnection(),getImmobileDao());
         }
         return userDao;
     }

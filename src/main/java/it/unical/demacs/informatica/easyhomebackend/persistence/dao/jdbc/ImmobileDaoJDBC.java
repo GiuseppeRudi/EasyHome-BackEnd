@@ -1,18 +1,18 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
-import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
+import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
+import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
-import org.springframework.web.multipart.MultipartFile;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.proxy.UtenteProxy;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class ImmobileDaoJDBC implements ImmobileDao {
     private final Connection connection;
@@ -22,10 +22,10 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     }
 
     @Override
-    public Immobile findByPrimaryKey(String nome) {
-        String query = "SELECT * FROM immobili WHERE nome = ?";
+    public Immobile findByPrimaryKey(int id) {
+        String query = "SELECT * FROM immobili WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, nome);
+            statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -40,63 +40,10 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     private Immobile createImm(ResultSet resultSet) throws SQLException {
 
-        List<MultipartFile> foto = new ArrayList<>();
-
-        // Se hai una tabella immobile_foto per le foto
-        String queryFoto = "SELECT foto FROM immagini WHERE immobile_id = ?";
-        try (PreparedStatement statementFoto = connection.prepareStatement(queryFoto)) {
-            statementFoto.setInt(1, resultSet.getInt("id"));
-            ResultSet rsFoto = statementFoto.executeQuery();
-            while (rsFoto.next()) {
-                byte[] fotoBytes = rsFoto.getBytes("foto");
-
-                // Converti byte[] in MultipartFile (questo passaggio è solo per simulare il file upload)
-                // Solitamente, questa parte avviene solo sul lato client, ma qui è un esempio di come puoi farlo
-                foto.add(new MultipartFile() {
-                    @Override
-                    public String getName() {
-                        return "foto"; // Puoi impostare il nome del file o lasciarlo generico
-                    }
-
-                    @Override
-                    public String getOriginalFilename() {
-                        return "foto_" + System.currentTimeMillis(); // Nome del file temporaneo
-                    }
-
-                    @Override
-                    public String getContentType() {
-                        return "image/jpeg"; // Puoi determinare il tipo di contenuto dal file
-                    }
-
-                    @Override
-                    public boolean isEmpty() {
-                        return fotoBytes.length == 0;
-                    }
-
-                    @Override
-                    public long getSize() {
-                        return fotoBytes.length;
-                    }
-
-                    @Override
-                    public byte[] getBytes() throws IOException {
-                        return fotoBytes;
-                    }
-
-                    @Override
-                    public InputStream getInputStream() throws IOException {
-                        return new ByteArrayInputStream(fotoBytes);
-                    }
-
-                    @Override
-                    public void transferTo(File dest) throws IOException, IllegalStateException {
-                        Files.write(dest.toPath(), fotoBytes); // Salva il file temporaneamente
-                    }
-                });
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante il recupero delle foto", e);
+        Array array = resultSet.getArray("immagini");
+        List<String> immagini = new ArrayList<>();
+        if (array != null) {
+            Collections.addAll(immagini, (String[]) array.getArray());
         }
 
         // Creazione dell'oggetto Immobile con foto convertite
@@ -115,7 +62,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 resultSet.getString("provincia"),
                 resultSet.getDouble("latitudine"),
                 resultSet.getDouble("longitudine"),
-                foto  // Adesso foto è una lista di MultipartFile
+                immagini
         );
     }
 
@@ -143,15 +90,31 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     public List<Immobile> findFiltered(String tipo, String categoria, String provincia) {
         List<Immobile> immobili = new ArrayList<>();
 
-        // Query con parametri dinamici
-        String query = "SELECT * FROM immobili WHERE tipo = ? AND categoria = ? AND provincia = ?";
+        String query = "SELECT * FROM immobili";
+
+        List<String> conditions = new ArrayList<>();
+
+        if (!Objects.equals(tipo, "Tutti")) conditions.add("tipo = ?");
+        if (!Objects.equals(categoria, "Tutti")) conditions.add("categoria = ?");
+        if (!Objects.equals(provincia, "Tutte")) conditions.add("provincia = ?");
+
+        if (!conditions.isEmpty()) {
+            query += " WHERE " + String.join(" AND ", conditions);
+        }
+        System.out.println(query);
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 
-            // Imposta i parametri
-            pstmt.setString(1, tipo);
-            pstmt.setString(2, categoria);
-            pstmt.setString(3, provincia);
+            int paramIndex = 1;
+            if (!Objects.equals(tipo, "Tutti")) {
+                pstmt.setString(paramIndex++, tipo);
+            }
+            if (!Objects.equals(categoria, "Tutti")) {
+                pstmt.setString(paramIndex++, categoria);
+            }
+            if (!Objects.equals(provincia, "Tutte")) {
+                pstmt.setString(paramIndex, provincia);
+            }
 
             // Esegui la query
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -161,14 +124,14 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 }
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Errore durante l'esecuzione della query", e);
         }
 
         return immobili;
     }
 
-    private Immobile mapRowToImmobile(ResultSet rs) throws SQLException {
+    private Immobile mapRowToImmobile(ResultSet rs) throws Exception {
         Immobile immobile = new Immobile();
         immobile.setId(rs.getInt("id"));
         immobile.setNome(rs.getString("nome"));
@@ -184,40 +147,67 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         immobile.setProvincia(rs.getString("provincia"));
         immobile.setLatitudine(rs.getDouble("latitudine"));
         immobile.setLongitudine(rs.getDouble("longitudine"));
+        immobile.setFoto(getImmagini(immobile.getId()));
 
-        // Aggiungi altri campi necessari
         return immobile;
     }
 
-    private void saveImmagini(int immobileId, List<MultipartFile> foto) throws SQLException, IOException {
-        String queryFoto = "INSERT INTO immagini (immobile_id, foto) VALUES (?, ?)";
-        try (PreparedStatement fotoStatement = connection.prepareStatement(queryFoto)) {
-            for (MultipartFile file : foto) {
-                fotoStatement.setInt(1, immobileId); // Associa l'immobile all'immagine
-                fotoStatement.setBytes(2, file.getBytes()); // Converte l'immagine in byte[]
-                fotoStatement.executeUpdate(); // Salva l'immagine nel database
-            }
+    @Override
+    public List<byte[]> getImmagini(Integer id) throws Exception {
+        Immobile immobile = findByPrimaryKey(id);
+        List<String> immobiliFotoPath = immobile.getFotoPaths();
+        List<byte[]> immobiliFoto = new ArrayList<>();
+        for (String path : immobiliFotoPath) {
+            Path p = Path.of(path);
+            immobiliFoto.add(Files.readAllBytes(p));
         }
+        return immobiliFoto;
     }
 
     @Override
-    public void save(String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta,String provincia, String indirizzo,List<MultipartFile> foto) {
-        String queryImmobile = "INSERT INTO immobili (nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void save(Immobile immobile, String user) {
+        String queryImmobile = "INSERT INTO immobili (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine, immagini, venditore) " +
+                "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                "ON CONFLICT (id) DO UPDATE SET " +
+                "nome=EXCLUDED.nome, " +
+                "tipo=EXCLUDED.tipo, " +
+                "descrizione=EXCLUDED.descrizione, " +
+                "categoria=EXCLUDED.categoria, " +
+                "prezzo=EXCLUDED.prezzo, " +
+                "mq=EXCLUDED.mq, " +
+                "camere=EXCLUDED.camere, " +
+                "bagni=EXCLUDED.bagni, " +
+                "anno=EXCLUDED.anno, " +
+                "etichetta=EXCLUDED.etichetta, " +
+                "provincia=EXCLUDED.provincia, " +
+                "latitudine=EXCLUDED.latitudine, " +
+                "longitudine=EXCLUDED.longitudine, " +
+                "immagini=EXCLUDED.immagini, " +
+                "venditore=EXCLUDED.venditore " +
+                "RETURNING id";
         try (PreparedStatement statementImmobile = connection.prepareStatement(queryImmobile, Statement.RETURN_GENERATED_KEYS)) {
-            statementImmobile.setString(1, nome);
-            statementImmobile.setString(2, tipo);
-            statementImmobile.setString(3, descrizione);
-            statementImmobile.setString(4, categoria);
-            statementImmobile.setDouble(5, prezzo);
-            statementImmobile.setInt(6, mq);
-            statementImmobile.setInt(7, camere);
-            statementImmobile.setInt(8, bagni);
-            statementImmobile.setInt(9, anno);
-            statementImmobile.setString(10, etichetta);
-            statementImmobile.setString(11, provincia);
-            statementImmobile.setDouble(12, 34.65475677);
-            statementImmobile.setDouble(13, 56.56476563);
-
+            if (immobile.getId() != null) {
+                statementImmobile.setObject(1, immobile.getId());
+            } else {
+                statementImmobile.setNull(1, Types.INTEGER);
+            }
+            statementImmobile.setString(2, immobile.getNome());
+            statementImmobile.setString(3, immobile.getTipo());
+            statementImmobile.setString(4, immobile.getDescrizione());
+            statementImmobile.setString(5, immobile.getCategoria());
+            statementImmobile.setDouble(6, immobile.getPrezzo());
+            statementImmobile.setInt(7, immobile.getMq());
+            statementImmobile.setInt(8, immobile.getCamere());
+            statementImmobile.setInt(9, immobile.getBagni());
+            statementImmobile.setInt(10, immobile.getAnno());
+            statementImmobile.setString(11, immobile.getEtichetta());
+            statementImmobile.setString(12, immobile.getProvincia());
+            statementImmobile.setDouble(13, 34.65475677);
+            statementImmobile.setDouble(14, 56.56476563);
+            List<String> imagesPaths = immobile.getFotoPaths();
+            Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
+            statementImmobile.setArray(15, sqlArray);
+            statementImmobile.setString(16, user);
             // Esegui l'update dell'immobile e ottieni l'ID generato
             int affectedRows = statementImmobile.executeUpdate();
             if (affectedRows == 0) {
@@ -227,23 +217,34 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             // Recupera l'ID dell'immobile appena inserito
             try (ResultSet rs = statementImmobile.getGeneratedKeys()) {
                 if (rs.next()) {
-                    int immobileId = rs.getInt(1); // Recupera l'ID generato
-
-                    // Salva le immagini
-                    saveImmagini(immobileId, foto);
+                    immobile.setId(rs.getInt(1));
                 } else {
                     throw new SQLException("Inserimento immobile fallito, nessun ID generato.");
                 }
 
             }
 
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Errore durante il salvataggio dell'immobile", e);
         }
     }
 
-
-
-
+    @Override
+    public List<Immobile> findByUserId(String username) {
+        String sql = "SELECT * FROM immobili WHERE venditore = ?";
+        List<Immobile> immobili = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Immobile immobile = createImm(rs);
+                immobile.setFoto(getImmagini(rs.getInt("id")));
+                immobili.add(immobile);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return immobili;
+    }
 }
