@@ -18,30 +18,37 @@ public class Utente implements UserDetails {
     private String username;
     private String password;
     private UserRole role;
-    private String nome;
-    private String cognome;
-    private String data_nascita;
-//    private String provincia_di_nascita;
-//    private String comune_di_nascita;
-    private String nazionalita;
+    private String firstName;
+    private String lastName;
+    private String birthdate;
+    private String province;
+    private String city;
+    private String country;
     private String email;
+    private String phoneNumber;
+    private String address;
+    private String gender;
+    private String cap;
+    private String id;
     protected List<Immobile> immobili;
 
-
-
-
-    public Utente(String username, String password, UserRole role, String nome,String cognome,String data_nascita,String nazionalita, String email) {
+    public Utente(String username, String password, UserRole role, String firstName, String lastName, String birthdate, String province, String city, String country, String email, String phoneNumber, String address, String gender, String cap, String id) {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.nazionalita= nazionalita;
-        this.nome = nome;
-        this.cognome = cognome;
-        this.data_nascita = data_nascita;
-        this.email= email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthdate = birthdate;
+        this.province = province;
+        this.city = city;
+        this.country = country;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.gender = gender;
+        this.cap = cap;
+        this.id = id;
     }
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

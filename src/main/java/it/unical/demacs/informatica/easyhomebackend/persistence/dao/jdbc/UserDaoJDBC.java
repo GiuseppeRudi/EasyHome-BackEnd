@@ -20,12 +20,10 @@ import java.util.List;
 public class UserDaoJDBC  implements UserDao {
 
     Connection connection;
-    private final ImmobileDao immobileDao;
 
 
-    public UserDaoJDBC(Connection connection, ImmobileDao immobileDao) {
+    public UserDaoJDBC(Connection connection) {
         this.connection = connection;
-        this.immobileDao = immobileDao;
     }
 
     @Override
@@ -42,9 +40,15 @@ public class UserDaoJDBC  implements UserDao {
                         rs.getString("nome"),
                         rs.getString("cognome"),
                         rs.getString("data_nascita"),
+                        rs.getString("provincia"),
+                        rs.getString("citta"),
                         rs.getString("nazionalita"),
                         rs.getString("email"),
-                        immobileDao
+                        rs.getString("telefono"),
+                        rs.getString("indirizzo"),
+                        rs.getString("sesso"),
+                        rs.getString("cap"),
+                        rs.getString("cf")
                 );
             }
             throw new UsernameNotFoundException("Utente non trovato");
@@ -55,16 +59,23 @@ public class UserDaoJDBC  implements UserDao {
 
     @Override
     public void save(Utente utente) {
-        String query = "INSERT INTO utente (username, password , role,nome,cognome, data_nascita, nazionalita, email) VALUES (?, ? , ?, ?, ?, ?, ?,?) " ;
+        String query = "INSERT INTO utente (username, password , role,nome,cognome, data_nascita, nazionalita, email, provincia,citta,telefono,indirizzo,sesso,cap,cf) VALUES (?, ? , ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?) " ;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, utente.getUsername());
             statement.setString(2, utente.getPassword());
             statement.setString(3, utente.getRole().toString());
-            statement.setString(4, utente.getNome());
-            statement.setString(5, utente.getCognome());
-            statement.setString(6, utente.getData_nascita());
-            statement.setString(7, utente.getNazionalita());
+            statement.setString(4, utente.getFirstName());
+            statement.setString(5, utente.getLastName());
+            statement.setString(6, utente.getBirthdate());
+            statement.setString(7, utente.getCountry());
             statement.setString(8, utente.getEmail());
+            statement.setString(9, utente.getProvince());
+            statement.setString(10, utente.getCity());
+            statement.setString(11, utente.getPhoneNumber());
+            statement.setString(12, utente.getAddress());
+            statement.setString(13, utente.getGender());
+            statement.setString(14, utente.getCap());
+            statement.setString(15, utente.getId());
             statement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
