@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ImmobileMinimal {
+    private int id;
     private String nome;
     private int prezzo;
     private String tipo;
@@ -13,7 +14,8 @@ public class ImmobileMinimal {
     private int mq;
     private String immagine; // Il primo elemento dell'array immagini
 
-    public ImmobileMinimal(String nome, int prezzo, String tipo, String categoria, int mq, String immagine) {
+    public ImmobileMinimal(int id,String nome, int prezzo, String tipo, String categoria, int mq, String immagine) {
+        this.id = id;
         this.nome = nome;
         this.prezzo = prezzo;
         this.tipo = tipo;
