@@ -13,13 +13,13 @@ public class MessaggioService implements IMessaggioService {
     }
 
     @Override
-    public void createMessaggio(Messaggio messaggio, String acquirente) {
+    public void createMessaggio(Messaggio messaggio, String acquirente,int immobileId) {
         if (messaggio.getOggetto() == null) {
             throw new IllegalArgumentException("I dati del messaggio non sono validi");
         }
         try {
             // Salvataggio dell'immobile
-            this.messaggioDao.save(messaggio, acquirente);
+            this.messaggioDao.save(messaggio, acquirente,immobileId);
         } catch (Exception e) {
             // Gestione delle eccezioni
             e.printStackTrace();

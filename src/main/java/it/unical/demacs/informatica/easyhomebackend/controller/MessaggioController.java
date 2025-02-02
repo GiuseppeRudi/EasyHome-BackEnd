@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class MessaggioController {
     private final IMessaggioService messaggioService= new MessaggioService();
 
+
     public MessaggioController() { }
 
     @PostMapping("/auth/createMessaggio")
@@ -19,7 +20,7 @@ public class MessaggioController {
             @ModelAttribute MessaggioDto messaggioDto) {
 
         Messaggio messaggio=new Messaggio(messaggioDto.getOggetto(), messaggioDto.getDescrizione());
-        this.messaggioService.createMessaggio(messaggio,messaggioDto.getAcquirente());
+        this.messaggioService.createMessaggio(messaggio,messaggioDto.getAcquirente(),messaggioDto.getIdImmobile());
         return ResponseEntity.ok().build();
     }
 }

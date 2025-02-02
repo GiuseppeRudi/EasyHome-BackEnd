@@ -14,23 +14,24 @@ public class MessaggioDaoJDBC implements MessaggioDao {
         this.connection = connection;
     }
     @Override
-    public void save(Messaggio messaggio,String acquirente) {
+    public void save(Messaggio messaggio,String acquirente,int immobileId) {
         String query = "INSERT INTO messaggio (id, oggetto, descrizione, acquirente, email, telefono, idImmobile) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?) ";
+                "VALUES (COALESCE(?, nextval('messaggio_id_seq')), ?, ?, ?, ?, ?, ?) ";
         try (PreparedStatement s = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             if (messaggio.getId() != null) {
                 s.setObject(1, messaggio.getId());
             } else {
                 s.setNull(1, Types.INTEGER);
             }
+
             s.setString(2, messaggio.getOggetto());
             s.setString(3, messaggio.getDescrizione());
             s.setString(4, acquirente);
             UserDao utenteDao = DBManager.getInstance().getUserDao();
             Utente utente = utenteDao.findByPrimaryKey(acquirente);
             s.setString(5, utente.getEmail());
-            s.setString(6, utente.getPhoneNumber());
-            //s.setInt(7, messaggio.getImmobile().getId());
+            s.setInt(6, Integer.parseInt(utente.getPhoneNumber()));
+            s.setInt(7, immobileId);
 
             s.executeUpdate();
 
