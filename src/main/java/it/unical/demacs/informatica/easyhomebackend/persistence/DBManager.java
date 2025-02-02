@@ -1,14 +1,8 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Recensione;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ContattiDao;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.RecensioneDao;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.ContattiDaoJDBC;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.ImmobileDaoJDBC;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.RecensioneDaoJDBC;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.UserDaoJDBC;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.*;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.*;
 import lombok.Getter;
 
 import java.sql.*;
@@ -19,6 +13,7 @@ public class DBManager {
     private ImmobileDao immobileDao = null;
     private RecensioneDao recensioneDao = null;
     private ContattiDao contattiDao = null;
+    private MessaggioDao messaggioDao = null;
     private static DBManager instance;
     @Getter
     private Connection connection;
@@ -49,9 +44,16 @@ public class DBManager {
 
     public UserDao getUserDao() {
         if (userDao == null) {
-            userDao = new UserDaoJDBC(getConnection(),getImmobileDao());
+            userDao = new UserDaoJDBC(getConnection());
         }
         return userDao;
+    }
+
+    public MessaggioDao getMessaggioDao() {
+        if (messaggioDao == null) {
+            messaggioDao = new MessaggioDaoJDBC(getConnection());
+        }
+        return messaggioDao;
     }
 
 

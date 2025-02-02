@@ -34,10 +34,10 @@ public class UtenteController {
         return  ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "open/users", method = RequestMethod.GET)
+    @RequestMapping(value = "/open/users", method = RequestMethod.GET)
     public List<UserRoleDto> getAllUsers() {
-        List<UserRoleDto> users = userService.getAllUsernamesAndRoles();  // Usa il nuovo metodo
-        return users;  // Restituisci la lista con username e ruolo
+        // Usa il nuovo metodo
+        return userService.getAllUsernamesAndRoles();  // Restituisci la lista con username e ruolo
     }
 
 

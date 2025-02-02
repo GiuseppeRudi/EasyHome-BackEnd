@@ -27,6 +27,7 @@ public class Immobile {
     private List<String> fotoPaths;
     private List<byte[]> foto;
     private Utente utente;
+    protected List<Messaggio> messaggi;
 
     // Costruttori, getter e setter
     public Immobile() {
