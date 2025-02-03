@@ -1,30 +1,24 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.proxy;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
+import it.unical.demacs.informatica.easyhomebackend.model.Messaggio;
 import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 
 import java.util.List;
 
 public class UtenteProxy extends Utente {
-    private final ImmobileDao immobileDAO;
-    private boolean immobiliLoaded = false;
 
-    public UtenteProxy(String username, String password, UserRole role,
-                       String nome, String cognome, String dataNascita,
-                       String nazionalita, String email, ImmobileDao immobileDAO) {
-        super(username, password, role, nome, cognome, dataNascita, nazionalita, email);
-        this.immobileDAO = immobileDAO;
+    public UtenteProxy(String username, String password, UserRole role, String firstName, String lastName, String birthdate, String province, String city, String country, String email, String phoneNumber, String address, String gender, String cap, String id) {
+        super(username, password, role, firstName,lastName,birthdate,province,city,country,email,phoneNumber,address,gender,cap,id);
     }
 
     @Override
     public List<Immobile> getImmobili() {
-        if (!immobiliLoaded) {
-            List<Immobile> immobiliCaricati = immobileDAO.findByUserId(this.getUsername());
-            super.setImmobili(immobiliCaricati);
-            immobiliLoaded = true;
+        if(this.immobili==null){
+            this.immobili = DBManager.getInstance().getImmobileDao().findByUserId(this.getUsername());
         }
-        return immobili;
+        return this.immobili;
     }
 }

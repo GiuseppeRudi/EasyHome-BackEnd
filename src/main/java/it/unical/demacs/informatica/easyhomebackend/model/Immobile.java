@@ -29,6 +29,7 @@ public class Immobile {
     private Utente utente;
     // da sistemare
     //private List<Recensione> recensioni;
+    protected List<Messaggio> messaggi;
 
     // Costruttori, getter e setter
     public Immobile() {

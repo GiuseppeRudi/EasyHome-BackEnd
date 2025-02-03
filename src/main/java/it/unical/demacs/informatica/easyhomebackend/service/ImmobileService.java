@@ -4,6 +4,7 @@ import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MarkerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +15,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ImmobileService implements IImmobileService {
@@ -99,4 +101,17 @@ public class ImmobileService implements IImmobileService {
     public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
         return immobileDao.getImmobiliFilteredMinimal(tipo, categoria, provincia);
     }
+
+
+    public List<MarkerDTO> getAllMarkers() {
+        return immobileDao.findAll()
+                .stream()
+                .map(immobile -> new MarkerDTO(immobile.getLatitudine(), immobile.getLongitudine()))
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
 }

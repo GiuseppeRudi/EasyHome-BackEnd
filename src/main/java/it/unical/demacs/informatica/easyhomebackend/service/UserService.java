@@ -32,8 +32,7 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public void createUser(Utente utente) {
-        // TODO checks: fields are not null, password complexity, username not already used
-        this.userDao.save(new Utente(utente.getUsername(), passwordEncoder.encode(utente.getPassword()), utente.getRole(),utente.getNome(),utente.getCognome(),utente.getData_nascita(),utente.getNazionalita(),utente.getEmail()));
+        this.userDao.save(new Utente(utente.getUsername(), passwordEncoder.encode(utente.getPassword()), utente.getRole(),utente.getFirstName(),utente.getLastName(),utente.getBirthdate(),utente.getProvince(),utente.getCity(), utente.getCountry(),utente.getEmail(),utente.getPhoneNumber(), utente.getAddress(), utente.getGender(), utente.getCap(), utente.getId()));
         this.getUser(utente.getUsername()).get();
     }
 

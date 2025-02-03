@@ -3,8 +3,10 @@ package it.unical.demacs.informatica.easyhomebackend.controller;
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.ImmobileDto;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MarkerDTO;
 import it.unical.demacs.informatica.easyhomebackend.service.IImmobileService;
 import it.unical.demacs.informatica.easyhomebackend.service.ImmobileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,5 +58,19 @@ public class ImmobileController {
         System.out.println(immobiliMinimal);
         return ResponseEntity.ok(immobiliMinimal);
     }
+
+    @GetMapping("/markers")
+    public ResponseEntity<List<MarkerDTO>> getAllMarkers(@RequestParam(required = false) String provincia) {
+        List<MarkerDTO> markers;
+        markers = immobileService.getAllMarkers();
+        System.out.println(markers);
+        return ResponseEntity.ok(markers);
+    }
+
+
+
+
+
+
 
 }
