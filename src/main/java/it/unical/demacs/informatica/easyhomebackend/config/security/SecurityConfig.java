@@ -65,7 +65,9 @@ public class SecurityConfig {
                         .logoutSuccessHandler((req, res, auth) -> {
                             // Invalidare la sessione al logout
                             req.getSession().invalidate();  // Invalida la sessione
+                            res.addHeader("Set-Cookie", "JSESSIONID=; Path=/; HttpOnly; Max-Age=0");
                             res.setStatus(200);  // Risposta di successo
+                            res.getWriter().write("{\"message\": \"Logout effettuato con successo\"}");
                         })
                 )
                 .sessionManagement(session -> session
