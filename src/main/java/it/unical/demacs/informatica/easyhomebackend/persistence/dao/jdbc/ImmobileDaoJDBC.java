@@ -4,13 +4,13 @@ import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import org.apache.commons.io.IOUtils;
 
 public class ImmobileDaoJDBC implements ImmobileDao {
     private final Connection connection;
@@ -248,11 +248,64 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     }
 
 
+//    @Override
+//    public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
+//        List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
+//
+//        String query = "SELECT nome, prezzo, tipo, categoria, mq, " +
+//                "CASE WHEN array_length(immagini, 1) > 0 THEN immagini[1] ELSE NULL END AS immagine " +
+//                "FROM immobili";
+//
+//        List<String> conditions = new ArrayList<>();
+//
+//        if (!Objects.equals(tipo, "Tutti")) conditions.add("tipo = ?");
+//        if (!Objects.equals(categoria, "Tutti")) conditions.add("categoria = ?");
+//        if (!Objects.equals(provincia, "Tutte")) conditions.add("provincia = ?");
+//
+//        if (!conditions.isEmpty()) {
+//            query += " WHERE " + String.join(" AND ", conditions);
+//        }
+//
+//        System.out.println("SQL Query: " + query);
+//
+//        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+//            int paramIndex = 1;
+//            if (!Objects.equals(tipo, "Tutti")) {
+//                pstmt.setString(paramIndex++, tipo);
+//            }
+//            if (!Objects.equals(categoria, "Tutti")) {
+//                pstmt.setString(paramIndex++, categoria);
+//            }
+//            if (!Objects.equals(provincia, "Tutte")) {
+//                pstmt.setString(paramIndex++, provincia);
+//            }
+//
+//            try (ResultSet rs = pstmt.executeQuery()) {
+//                while (rs.next()) {
+//                    String nome = rs.getString("nome");
+//                    int prezzo = rs.getInt("prezzo");
+//                    String tipoImmobile = rs.getString("tipo");
+//                    String categoriaImmobile = rs.getString("categoria");
+//                    int mq = rs.getInt("mq");
+//                    String immagine = rs.getString("immagine");
+//
+//                    immobiliMinimal.add(new ImmobileMinimal(nome, prezzo, tipoImmobile, categoriaImmobile, mq, immagine));
+//                }
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException("Errore durante l'esecuzione della query", e);
+//        }
+//
+//        return immobiliMinimal;
+//    }
+
+
+
     @Override
     public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
         List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
 
-        String query = "SELECT nome, prezzo, tipo, categoria, mq, " +
+        String query = "SELECT id,nome, prezzo, tipo, categoria, mq, " +
                 "CASE WHEN array_length(immagini, 1) > 0 THEN immagini[1] ELSE NULL END AS immagine " +
                 "FROM immobili";
 
@@ -282,6 +335,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
+                    Integer id  = rs.getInt("id");
                     String nome = rs.getString("nome");
                     int prezzo = rs.getInt("prezzo");
                     String tipoImmobile = rs.getString("tipo");
@@ -289,7 +343,20 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                     int mq = rs.getInt("mq");
                     String immagine = rs.getString("immagine");
 
-                    immobiliMinimal.add(new ImmobileMinimal(nome, prezzo, tipoImmobile, categoriaImmobile, mq, immagine));
+                    String base64Image = null;
+                    if (immagine != null && !immagine.isEmpty()) {
+                        File imageFile = new File(immagine);
+                        if (imageFile.exists()) {
+                            try (FileInputStream fileInputStream = new FileInputStream(imageFile)) {
+                                byte[] bytes = IOUtils.toByteArray(fileInputStream);
+                                base64Image = Base64.getEncoder().encodeToString(bytes);
+                            } catch (Exception e) {
+                                System.err.println("Errore nel caricamento dell'immagine: " + e.getMessage());
+                            }
+                        }
+                    }
+
+                    immobiliMinimal.add(new ImmobileMinimal(id,nome, prezzo, tipoImmobile, categoriaImmobile, mq, base64Image));
                 }
             }
         } catch (SQLException e) {
@@ -298,6 +365,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
         return immobiliMinimal;
     }
+
 
 
 
