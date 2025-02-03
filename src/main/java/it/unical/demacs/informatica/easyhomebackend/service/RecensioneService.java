@@ -15,27 +15,19 @@ public class RecensioneService {
     public RecensioneService() {
     }
 
-    public Recensione creaRecensione(int rating, String descrizione) {
+    public void creaRecensione(Recensione recensione) {
         // Validazione dei campi obbligatori
-        if (rating < 1 || rating > 5 || descrizione == null || descrizione.isEmpty()) {
+        if (recensione.getRating() < 1 || recensione.getRating() > 5 || recensione.getDescrizione() == null || recensione.getDescrizione().isEmpty()) {
             throw new IllegalArgumentException("I dati della recensione non sono validi");
         }
 
-        // Creazione della recensione senza ID (sarà generato automaticamente)
-        Recensione nuovaRecensione = new Recensione();
-        nuovaRecensione.setRating(rating);
-        nuovaRecensione.setDescrizione(descrizione);
-
         try {
             // Salvataggio della recensione nel database
-            recensioneDao.save(nuovaRecensione);
+            recensioneDao.save(recensione);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Errore durante il salvataggio della recensione", e);
         }
-
-        // Restituisco la recensione con l'ID generato
-        return nuovaRecensione;
     }
 
 }

@@ -15,9 +15,11 @@ public class Recensione {
         @Setter
         @Getter
 
-        private int id;
+        private Integer id;
         private int rating;
         private String descrizione;
+        private String acquirente;
+        private int idImmobile;
 
 
         public Recensione() {

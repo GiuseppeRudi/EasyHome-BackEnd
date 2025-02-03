@@ -11,4 +11,7 @@ public class MessaggioDto {
     private String descrizione;
     private String acquirente;
     private int idImmobile;
+    private String nomeImmobile;
+    private String email;
+    private int telefono;
 }

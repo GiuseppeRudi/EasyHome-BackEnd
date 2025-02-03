@@ -7,5 +7,5 @@ public interface RecensioneDao {
 
 
 
-    public void save(Recensione recensione);
+    void save(Recensione recensione);
 }

@@ -1,11 +1,10 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.proxy;
 
-import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
-import it.unical.demacs.informatica.easyhomebackend.model.Messaggio;
-import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
-import it.unical.demacs.informatica.easyhomebackend.model.Utente;
+import it.unical.demacs.informatica.easyhomebackend.model.*;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UtenteProxy extends Utente {
@@ -21,4 +20,24 @@ public class UtenteProxy extends Utente {
         }
         return this.immobili;
     }
+
+    @Override
+    public List<MessaggioDto> getMessaggi() {
+        if(this.messaggi==null){
+            this.messaggi = new ArrayList<>();
+            for(Immobile imm: this.getImmobili()){
+                List<MessaggioDto> messaggiPerId =DBManager.getInstance().getMessaggioDao().findByImmobileId(imm.getId());
+                this.messaggi.addAll(messaggiPerId);
+            }
+        }
+        return this.messaggi;
+    }
+
+//    @Override
+//    public List<Recensione> getRecensioni() {
+//        if(this.recensioni==null){
+//            this.recensioni = DBManager.getInstance().getRecensioneDao().findByUserId(this.getUsername());
+//        }
+//        return this.recensioni;
+//    }
 }

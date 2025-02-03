@@ -1,12 +1,19 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 
+import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.Messaggio;
+import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.MessaggioDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessaggioDaoJDBC implements MessaggioDao {
     private final Connection connection;
@@ -48,5 +55,33 @@ public class MessaggioDaoJDBC implements MessaggioDao {
             e.printStackTrace();
             throw new RuntimeException("Errore durante il salvataggio del messaggio", e);
         }
+    }
+
+    public List<MessaggioDto> findByImmobileId(int idImmobile) {
+        String sql = "SELECT * FROM messaggio WHERE idimmobile = ?";  // Query per ottenere username e ruolo
+        List<MessaggioDto> messaggi = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, idImmobile);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                MessaggioDto messaggio = new MessaggioDto();
+                messaggio.setOggetto(resultSet.getString("oggetto"));
+                messaggio.setDescrizione(resultSet.getString("descrizione"));
+                messaggio.setAcquirente(resultSet.getString("acquirente"));
+                messaggio.setEmail(resultSet.getString("email"));
+                messaggio.setTelefono(resultSet.getInt("telefono"));
+                ImmobileDao immobileDao = DBManager.getInstance().getImmobileDao();
+                Immobile immobile = immobileDao.findByPrimaryKey(resultSet.getInt("idimmobile"));
+                messaggio.setIdImmobile(immobile.getId());
+                messaggio.setNomeImmobile(immobile.getNome());
+                messaggi.add(messaggio);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return messaggi;
     }
 }

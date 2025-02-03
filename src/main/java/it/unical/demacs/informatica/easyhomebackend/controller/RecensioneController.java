@@ -1,6 +1,7 @@
 package it.unical.demacs.informatica.easyhomebackend.controller;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Recensione;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
 import it.unical.demacs.informatica.easyhomebackend.service.RecensioneService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +20,10 @@ public class RecensioneController {
     }
 
     // Endpoint per creare una recensione
-    @PostMapping("/auth/createRecensione")
-    public ResponseEntity<Void> createRecensione(@RequestParam("rating") int rating,
-                                                 @RequestParam("descrizione") String descrizione
-                                                 ) {
-        this.recensioneService.creaRecensione(rating,descrizione);
+    @PostMapping("/auth/recensioni/createRecensione")
+    public ResponseEntity<Void> createRecensione(@ModelAttribute Recensione recensione) {
+        this.recensioneService.creaRecensione(recensione);
         return ResponseEntity.ok().build();
     }
-
-
 
 }

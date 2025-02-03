@@ -15,7 +15,7 @@ public class MessaggioController {
 
     public MessaggioController() { }
 
-    @PostMapping("/auth/createMessaggio")
+    @PostMapping("/auth/messaggi/createMessaggio")
     public ResponseEntity<Void> createMessaggio(
             @ModelAttribute MessaggioDto messaggioDto) {
 
@@ -23,4 +23,5 @@ public class MessaggioController {
         this.messaggioService.createMessaggio(messaggio,messaggioDto.getAcquirente(),messaggioDto.getIdImmobile());
         return ResponseEntity.ok().build();
     }
+
 }
