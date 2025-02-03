@@ -20,6 +20,8 @@ public interface IImmobileService {
         List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia);
 
         List<MarkerDTO> getAllMarkers();
+
+        void deleteImmobile(int id) throws Exception;
 }
 
 
