@@ -21,7 +21,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public Immobile findByPrimaryKey(int id) {
-        String query = "SELECT * FROM immobili WHERE id = ?";
+        String query = "SELECT * FROM immobile WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -89,7 +89,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         List<Immobile> immobili = new ArrayList<>();
 
 
-        String query = "SELECT * FROM immobili";
+        String query = "SELECT * FROM immobile";
 
         List<String> conditions = new ArrayList<>();
 
@@ -165,7 +165,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public void save(Immobile immobile, String user) {
-        String queryImmobile = "INSERT INTO immobili (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine, immagini, venditore) " +
+        String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine, immagini, venditore) " +
                 "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON CONFLICT (id) DO UPDATE SET " +
                 "nome=EXCLUDED.nome, " +
@@ -231,7 +231,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public List<Immobile> findByUserId(String username) {
-        String sql = "SELECT * FROM immobili WHERE venditore = ?";
+        String sql = "SELECT * FROM immobile WHERE venditore = ?";
         List<Immobile> immobili = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
@@ -248,66 +248,13 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     }
 
 
-//    @Override
-//    public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
-//        List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
-//
-//        String query = "SELECT nome, prezzo, tipo, categoria, mq, " +
-//                "CASE WHEN array_length(immagini, 1) > 0 THEN immagini[1] ELSE NULL END AS immagine " +
-//                "FROM immobili";
-//
-//        List<String> conditions = new ArrayList<>();
-//
-//        if (!Objects.equals(tipo, "Tutti")) conditions.add("tipo = ?");
-//        if (!Objects.equals(categoria, "Tutti")) conditions.add("categoria = ?");
-//        if (!Objects.equals(provincia, "Tutte")) conditions.add("provincia = ?");
-//
-//        if (!conditions.isEmpty()) {
-//            query += " WHERE " + String.join(" AND ", conditions);
-//        }
-//
-//        System.out.println("SQL Query: " + query);
-//
-//        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-//            int paramIndex = 1;
-//            if (!Objects.equals(tipo, "Tutti")) {
-//                pstmt.setString(paramIndex++, tipo);
-//            }
-//            if (!Objects.equals(categoria, "Tutti")) {
-//                pstmt.setString(paramIndex++, categoria);
-//            }
-//            if (!Objects.equals(provincia, "Tutte")) {
-//                pstmt.setString(paramIndex++, provincia);
-//            }
-//
-//            try (ResultSet rs = pstmt.executeQuery()) {
-//                while (rs.next()) {
-//                    String nome = rs.getString("nome");
-//                    int prezzo = rs.getInt("prezzo");
-//                    String tipoImmobile = rs.getString("tipo");
-//                    String categoriaImmobile = rs.getString("categoria");
-//                    int mq = rs.getInt("mq");
-//                    String immagine = rs.getString("immagine");
-//
-//                    immobiliMinimal.add(new ImmobileMinimal(nome, prezzo, tipoImmobile, categoriaImmobile, mq, immagine));
-//                }
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException("Errore durante l'esecuzione della query", e);
-//        }
-//
-//        return immobiliMinimal;
-//    }
-
-
-
     @Override
     public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
         List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
 
         String query = "SELECT id,nome, prezzo, tipo, categoria, mq, " +
                 "CASE WHEN array_length(immagini, 1) > 0 THEN immagini[1] ELSE NULL END AS immagine " +
-                "FROM immobili";
+                "FROM immobile";
 
         List<String> conditions = new ArrayList<>();
 
@@ -365,8 +312,6 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
         return immobiliMinimal;
     }
-
-
 
 
 }
