@@ -252,7 +252,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
         List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
 
-        String query = "SELECT id,nome, prezzo, tipo, categoria, mq, " +
+        String query = "SELECT id,nome, prezzo, tipo, categoria, mq " +
                 "CASE WHEN array_length(immagini, 1) > 0 THEN immagini[1] ELSE NULL END AS immagine " +
                 "FROM immobile";
 
@@ -299,6 +299,9 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
         return immobiliMinimal;
     }
+
+
+
 
 
 
