@@ -55,7 +55,6 @@ public class ImmobileController {
         // Utilizza i parametri per filtrare i risultati
         List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliFilteredMinimal(tipo,categoria,provincia);
 
-        System.out.println(immobiliMinimal);
         return ResponseEntity.ok(immobiliMinimal);
     }
 
@@ -63,7 +62,7 @@ public class ImmobileController {
     public ResponseEntity<List<MarkerDTO>> getAllMarkers(@RequestParam(required = false) String provincia) {
         List<MarkerDTO> markers;
         markers = immobileService.getAllMarkers();
-        System.out.println(markers);
+
         return ResponseEntity.ok(markers);
     }
 

@@ -100,7 +100,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         if (!conditions.isEmpty()) {
             query += " WHERE " + String.join(" AND ", conditions);
         }
-        System.out.println(query);
+
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 
