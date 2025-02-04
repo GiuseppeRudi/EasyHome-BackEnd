@@ -69,6 +69,23 @@ public class ImmobileService implements IImmobileService {
         immobile.setFotoPaths(immagini);
     }
 
+    //    private void saveImmagini(Immobile immobile, List<MultipartFile> foto) throws Exception {
+//        Long travelDirectory = travel.getId();
+//        File directory = new File(TRAVEL_IMAGES_DIR + travelDirectory);
+//        if (!directory.exists() && !directory.mkdirs()) {
+//            throw new Exception("Could not create directory");
+//        }
+//        deleteExistingFiles(directory.listFiles());
+//        List<String> imagesPaths = new ArrayList<>();
+//        for (MultipartFile travelImage : travelImages) {
+//            String fileName = travel.getId() + '-' + travelImage.getOriginalFilename();
+//            Path path = Path.of(TRAVEL_IMAGES_DIR + travelDirectory, fileName);
+//            Files.copy(travelImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+//            imagesPaths.add(fileName);
+//        }
+//        travel.setImagesPaths(imagesPaths);
+//    }
+
     private void deleteExistingFiles(File[] existingFiles) throws Exception {
         if (existingFiles != null) {
             for (File existingFile : existingFiles) {

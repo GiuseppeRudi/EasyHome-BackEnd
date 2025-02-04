@@ -38,7 +38,7 @@ public class MessaggioDaoJDBC implements MessaggioDao {
             UserDao utenteDao = DBManager.getInstance().getUserDao();
             Utente utente = utenteDao.findByPrimaryKey(acquirente);
             s.setString(5, utente.getEmail());
-            s.setString(6, utente.getPhoneNumber());
+            s.setLong(6, Integer.parseInt(utente.getPhoneNumber()));
             s.setInt(7, immobileId);
 
             s.executeUpdate();
@@ -72,7 +72,7 @@ public class MessaggioDaoJDBC implements MessaggioDao {
                 messaggio.setDescrizione(resultSet.getString("descrizione"));
                 messaggio.setAcquirente(resultSet.getString("acquirente"));
                 messaggio.setEmail(resultSet.getString("email"));
-                messaggio.setTelefono(resultSet.getString("telefono"));
+                messaggio.setTelefono(resultSet.getLong("telefono"));
                 ImmobileDao immobileDao = DBManager.getInstance().getImmobileDao();
                 Immobile immobile = immobileDao.findByPrimaryKey(resultSet.getInt("idimmobile"));
                 messaggio.setIdImmobile(immobile.getId());

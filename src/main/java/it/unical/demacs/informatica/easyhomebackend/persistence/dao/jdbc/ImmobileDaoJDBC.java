@@ -368,9 +368,6 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         rs.getDouble("longitudine"),
                         immaginiList // Lista di immagini
                 );
-
-                System.out.println(immobile.getFotoPaths());
-                System.out.println(venditore);
                 immobile.setUtente(DBManager.getInstance().getUserDao().findByPrimaryKey(venditore));
                 return Optional.of(immobile);
             }

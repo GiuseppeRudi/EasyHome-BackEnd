@@ -59,8 +59,8 @@ public class ImmobileController {
         return ResponseEntity.ok(immobiliMinimal);
     }
 
-    @GetMapping("/markers")
-    public ResponseEntity<List<MarkerDTO>> getAllMarkers(@RequestParam(required = false) String provincia) {
+    @GetMapping("/open/markers")
+    public ResponseEntity<List<MarkerDTO>> getAllMarkers() {
         List<MarkerDTO> markers;
         markers = immobileService.getAllMarkers();
 
