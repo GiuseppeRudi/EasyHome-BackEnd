@@ -51,7 +51,11 @@ public class ImmobileController {
     public ResponseEntity<List<ImmobileMinimal>> getImmobiliMinimal(
             @RequestParam(value = "tipo", required = false) String tipo,
             @RequestParam(value = "categoria", required = false) String categoria,
-            @RequestParam(value = "provincia", required = false) String provincia) {
+            @RequestParam(value = "provincia", required = false) String provincia){
+
+        System.out.println(tipo);
+        System.out.println(categoria);
+        System.out.println(provincia);
 
         // Utilizza i parametri per filtrare i risultati
         List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliFilteredMinimal(tipo,categoria,provincia);

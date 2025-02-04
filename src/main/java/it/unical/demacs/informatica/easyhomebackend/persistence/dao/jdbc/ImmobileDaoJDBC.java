@@ -259,14 +259,23 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
         List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
 
-        String query = "SELECT id, nome, prezzo, tipo, categoria, mq, immagini " +
-                "FROM immobile";
-
+        String query = "SELECT id, nome, prezzo, tipo, categoria, mq, immagini FROM immobile";
         List<String> conditions = new ArrayList<>();
 
-        if (!Objects.equals(tipo, "Tutti")) conditions.add("tipo = ?");
-        if (!Objects.equals(categoria, "Tutti")) conditions.add("categoria = ?");
-        if (!Objects.equals(provincia, "Tutte")) conditions.add("provincia = ?");
+        if (!Objects.equals(tipo, "Tutti")) {
+            conditions.add("tipo = ?");
+        }
+
+        // Se la categoria è "Tutti", escludi gli immobili con categoria "Aste"
+        if (Objects.equals(categoria, "Tutti")) {
+            conditions.add("categoria != 'Aste'");
+        } else {
+            conditions.add("categoria = ?");
+        }
+
+        if (!Objects.equals(provincia, "Tutte")) {
+            conditions.add("provincia = ?");
+        }
 
         if (!conditions.isEmpty()) {
             query += " WHERE " + String.join(" AND ", conditions);
@@ -276,6 +285,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             int paramIndex = 1;
+
             if (!Objects.equals(tipo, "Tutti")) {
                 pstmt.setString(paramIndex++, tipo);
             }
@@ -313,8 +323,10 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             throw new RuntimeException("Errore durante l'esecuzione della query", e);
         }
 
+        System.out.println(immobiliMinimal);
         return immobiliMinimal;
     }
+
 
 
     @Override

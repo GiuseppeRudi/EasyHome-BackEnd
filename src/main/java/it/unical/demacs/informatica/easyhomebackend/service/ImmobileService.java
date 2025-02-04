@@ -54,7 +54,7 @@ public class ImmobileService implements IImmobileService {
 
     private void saveImmagini(Immobile immobile, List<MultipartFile> foto) throws Exception {
         int immobileDir = immobile.getId();
-        File directory = new File(immobiliImagesDir + immobileDir);
+        File directory = new File(immobiliImagesDir + "/" + immobileDir);
         if (!directory.exists() && !directory.mkdirs()) {
             throw new Exception("Could not create directory");
         }
@@ -62,29 +62,13 @@ public class ImmobileService implements IImmobileService {
         List<String> immagini = new ArrayList<>();
         for (MultipartFile f : foto) {
             String fileName = f.getOriginalFilename();
-            Path path = Path.of(immobiliImagesDir + immobileDir, fileName);
+            Path path = Path.of(immobiliImagesDir + "/" + immobileDir, fileName);
             Files.copy(f.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            immagini.add(immobiliImagesDir + immobileDir + "/" + fileName);
+            immagini.add(immobiliImagesDir + "/" + immobileDir + "/" + fileName);
         }
         immobile.setFotoPaths(immagini);
     }
 
-    //    private void saveImmagini(Immobile immobile, List<MultipartFile> foto) throws Exception {
-//        Long travelDirectory = travel.getId();
-//        File directory = new File(TRAVEL_IMAGES_DIR + travelDirectory);
-//        if (!directory.exists() && !directory.mkdirs()) {
-//            throw new Exception("Could not create directory");
-//        }
-//        deleteExistingFiles(directory.listFiles());
-//        List<String> imagesPaths = new ArrayList<>();
-//        for (MultipartFile travelImage : travelImages) {
-//            String fileName = travel.getId() + '-' + travelImage.getOriginalFilename();
-//            Path path = Path.of(TRAVEL_IMAGES_DIR + travelDirectory, fileName);
-//            Files.copy(travelImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-//            imagesPaths.add(fileName);
-//        }
-//        travel.setImagesPaths(imagesPaths);
-//    }
 
     private void deleteExistingFiles(File[] existingFiles) throws Exception {
         if (existingFiles != null) {
@@ -96,10 +80,6 @@ public class ImmobileService implements IImmobileService {
         }
     }
 
-    @Override
-    public List<Immobile> getImmobiliFiltered(String tipo, String categoria, String provincia) {
-        return immobileDao.findFiltered(tipo, categoria, provincia);
-    }
 
 
     @Override

@@ -22,6 +22,7 @@ public class ImagesController {
     public ResponseEntity<byte[]> getImage(@PathVariable String folder ,@PathVariable String folder1, @PathVariable String imageName) throws IOException {
         File imgFile = new File(folder + "/" + folder1 + "/" + imageName);
 
+        System.out.println(imageName);
         if (!imgFile.exists()) {
             return ResponseEntity.notFound().build();
         }
