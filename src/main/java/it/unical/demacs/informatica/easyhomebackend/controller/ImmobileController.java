@@ -25,6 +25,14 @@ public class ImmobileController {
     @RequestMapping(value = "/auth/immobili/createImmobile", method = RequestMethod.POST)
     public ResponseEntity<Void> createImmobile(
             @ModelAttribute ImmobileDto immobileDto) throws Exception {
+        Immobile nuovoImmobile = componiImmobile(immobileDto);
+
+
+        this.immobileService.createImmobile(nuovoImmobile,immobileDto.getFoto(),immobileDto.getUser());
+        return ResponseEntity.ok().build();
+    }
+
+    private Immobile componiImmobile(@ModelAttribute ImmobileDto immobileDto) {
         Immobile nuovoImmobile = new Immobile();
         nuovoImmobile.setId(null);
         nuovoImmobile.setNome(immobileDto.getNome());
@@ -41,9 +49,7 @@ public class ImmobileController {
         nuovoImmobile.setLatitudine(immobileDto.getLatitudine());
         nuovoImmobile.setLongitudine(immobileDto.getLongitudine());
         nuovoImmobile.setFotoPaths(new ArrayList<>());
-
-        this.immobileService.createImmobile(nuovoImmobile,immobileDto.getFoto(),immobileDto.getUser());
-        return ResponseEntity.ok().build();
+        return nuovoImmobile;
     }
 
 
@@ -57,9 +63,16 @@ public class ImmobileController {
         System.out.println(categoria);
         System.out.println(provincia);
 
-        // Utilizza i parametri per filtrare i risultati
         List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliFilteredMinimal(tipo,categoria,provincia);
+        return ResponseEntity.ok(immobiliMinimal);
+    }
 
+    @RequestMapping(value = "/auth/immobili/{username}", method = RequestMethod.GET)
+    public ResponseEntity<List<ImmobileMinimal>> getImmobiliMinimalByUsername(
+            @PathVariable("username") String username) {
+
+        // Utilizza i parametri per filtrare i risultati
+        List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliMinimalByUsername(username);
         return ResponseEntity.ok(immobiliMinimal);
     }
 
@@ -71,7 +84,7 @@ public class ImmobileController {
         return ResponseEntity.ok(markers);
     }
 
-    @RequestMapping(value = "/open/immobili/deleteImmobile/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/auth/immobili/deleteImmobile/{id}", method = RequestMethod.DELETE)
 
     public ResponseEntity<Void> deleteImmobile(@PathVariable("id") int id) {
         try {
@@ -82,6 +95,14 @@ public class ImmobileController {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Errore (500 Internal Server Error)
         }
+    }
+
+    @RequestMapping(value = "/auth/immobili/updateImmobile/{id}", method = RequestMethod.POST)
+    public ResponseEntity<Void> updateImmobile(@PathVariable("id") int id, @ModelAttribute ImmobileDto immobileDto) throws Exception {
+        Immobile nuovoImmobile = componiImmobile(immobileDto);
+        nuovoImmobile.setId(id);
+        this.immobileService.updateImmobile(nuovoImmobile,immobileDto.getFoto(),immobileDto.getUser());
+        return ResponseEntity.ok().build();
     }
 
 
@@ -96,8 +117,5 @@ public class ImmobileController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
-
 
 }

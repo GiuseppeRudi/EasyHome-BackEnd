@@ -51,6 +51,27 @@ public class ImmobileService implements IImmobileService {
         return savedImmobile.orElseThrow(() -> new RuntimeException("Immobile non trovato dopo il salvataggio"));
     }
 
+    @Override
+    public void updateImmobile(Immobile immobile, List<MultipartFile> foto, String user) throws Exception {
+        // Validazione dei campi obbligatori
+
+        if (immobile.getNome() == null || immobile.getPrezzo() <= 0) {
+            throw new IllegalArgumentException("I dati dell'immobile non sono validi");
+        }
+        try {
+            // Salvataggio dell'immobile
+            this.immobileDao.update(immobile,user);
+        } catch (Exception e) {
+            // Gestione delle eccezioni
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante il salvataggio dell'immobile", e);
+        }
+        Optional<Immobile> savedImmobile = getImmobile(immobile.getId());
+        if (savedImmobile.isPresent()) {
+            saveImmagini(savedImmobile.get(), foto);
+            immobileDao.update(savedImmobile.get(), user);
+        }
+    }
 
     private void saveImmagini(Immobile immobile, List<MultipartFile> foto) throws Exception {
         int immobileDir = immobile.getId();
@@ -115,6 +136,11 @@ public class ImmobileService implements IImmobileService {
     public void deleteImmobile(int id) throws Exception {
             deleteImmobileImages(id);
             immobileDao.deleteimmobileID(id);
+    }
+
+    @Override
+    public List<ImmobileMinimal> getImmobiliMinimalByUsername(String username) {
+        return immobileDao.getImmobiliMinimalByUsername(username);
     }
 
     private void deleteImmobileImages(int immobileId) throws Exception {
