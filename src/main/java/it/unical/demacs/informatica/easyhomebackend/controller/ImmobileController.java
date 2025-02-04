@@ -47,7 +47,7 @@ public class ImmobileController {
 
 
     @RequestMapping(value = "/open/immobili", method = RequestMethod.GET)
-    public ResponseEntity<List<ImmobileMinimal>> getImmobili(
+    public ResponseEntity<List<ImmobileMinimal>> getImmobiliMinimal(
             @RequestParam(value = "tipo", required = false) String tipo,
             @RequestParam(value = "categoria", required = false) String categoria,
             @RequestParam(value = "provincia", required = false) String provincia) {
@@ -68,6 +68,16 @@ public class ImmobileController {
 
 
 
+    @GetMapping("/auth/dettaglio/{id}")
+    public ResponseEntity<Immobile> getImmobileById(@PathVariable int id) {
+        System.out.println("ciao");
+        Immobile immobile = immobileService.getImmobileById(id);
+        if (immobile != null) {
+            return ResponseEntity.ok(immobile);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 
 

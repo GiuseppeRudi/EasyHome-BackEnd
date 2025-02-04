@@ -22,13 +22,10 @@ public class Immobile {
     private String provincia;
     private double latitudine;
     private double longitudine;
-    @Setter
-    @Getter
     private List<String> fotoPaths;
     private List<byte[]> foto;
     private Utente utente;
-    // da sistemare
-    //private List<Recensione> recensioni;
+
     protected List<Messaggio> messaggi;
 
     // Costruttori, getter e setter

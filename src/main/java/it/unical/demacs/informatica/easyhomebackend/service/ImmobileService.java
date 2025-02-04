@@ -110,8 +110,11 @@ public class ImmobileService implements IImmobileService {
                 .collect(Collectors.toList());
     }
 
-
-
+    @Override
+    public Immobile getImmobileById(int id) {
+        Optional<Immobile> immobile = immobileDao.findById(id);
+        return immobile.orElse(null);
+    }
 
 
 }

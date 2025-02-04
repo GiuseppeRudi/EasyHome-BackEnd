@@ -2,6 +2,7 @@ package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
+import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 
 import java.io.File;
@@ -10,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.*;
+import java.util.prefs.Preferences;
+
 import org.apache.commons.io.IOUtils;
 
 public class ImmobileDaoJDBC implements ImmobileDao {
@@ -248,12 +251,12 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     }
 
 
+
     @Override
     public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
         List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
 
-        String query = "SELECT id,nome, prezzo, tipo, categoria, mq, " +
-                "CASE WHEN array_length(immagini, 1) > 0 THEN immagini[1] ELSE NULL END AS immagine " +
+        String query = "SELECT id, nome, prezzo, tipo, categoria, mq, immagini " +
                 "FROM immobile";
 
         List<String> conditions = new ArrayList<>();
@@ -288,22 +291,19 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                     String tipoImmobile = rs.getString("tipo");
                     String categoriaImmobile = rs.getString("categoria");
                     int mq = rs.getInt("mq");
-                    String immagine = rs.getString("immagine");
 
-                    String base64Image = null;
-                    if (immagine != null && !immagine.isEmpty()) {
-                        File imageFile = new File(immagine);
-                        if (imageFile.exists()) {
-                            try (FileInputStream fileInputStream = new FileInputStream(imageFile)) {
-                                byte[] bytes = IOUtils.toByteArray(fileInputStream);
-                                base64Image = Base64.getEncoder().encodeToString(bytes);
-                            } catch (Exception e) {
-                                System.err.println("Errore nel caricamento dell'immagine: " + e.getMessage());
-                            }
+                    // Recupero della prima immagine dell'array
+                    Array immaginiArray = rs.getArray("immagini");
+                    String primaImmagine = null;
+
+                    if (immaginiArray != null) {
+                        String[] immagini = (String[]) immaginiArray.getArray();
+                        if (immagini.length > 0) {
+                            primaImmagine = immagini[0]; // Prende solo la prima immagine
                         }
                     }
 
-                    immobiliMinimal.add(new ImmobileMinimal(id,nome, prezzo, tipoImmobile, categoriaImmobile, mq, base64Image));
+                    immobiliMinimal.add(new ImmobileMinimal(id, nome, prezzo, tipoImmobile, categoriaImmobile, mq, primaImmagine));
                 }
             }
         } catch (SQLException e) {
@@ -311,6 +311,53 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         }
 
         return immobiliMinimal;
+    }
+
+
+
+    @Override
+    public Optional<Immobile> findById(int id) {
+        String query = "SELECT * FROM immobile WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String[] immaginiArray = (String[]) rs.getArray("immagini").getArray(); // Converte in String[]
+                List<String> immaginiList = immaginiArray != null ? Arrays.asList(immaginiArray) : new ArrayList<>();
+
+                String venditore = rs.getString("venditore");
+                Immobile immobile = new Immobile(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("tipo"),
+                        rs.getString("descrizione"),
+                        rs.getString("categoria"),
+                        rs.getInt("prezzo"),
+                        rs.getInt("mq"),
+                        rs.getInt("camere"),
+                        rs.getInt("bagni"),
+                        rs.getInt("anno"),
+                        rs.getString("etichetta"),
+                        rs.getString("provincia"),
+                        rs.getDouble("latitudine"),
+                        rs.getDouble("longitudine"),
+                        immaginiList // Lista di immagini
+                );
+
+                System.out.println(immobile.getFotoPaths());
+                System.out.println(venditore);
+                immobile.setUtente(DBManager.getInstance().getUserDao().findByPrimaryKey(venditore));
+                return Optional.of(immobile);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
     }
 
 

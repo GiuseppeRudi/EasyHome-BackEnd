@@ -4,6 +4,7 @@ import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interfaccia DAO per la gestione degli immobili.
@@ -37,5 +38,7 @@ public interface ImmobileDao {
          */
         List<Immobile> findAll();
 
-    List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia);
+        List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia);
+
+        Optional<Immobile> findById(int id);
 }
