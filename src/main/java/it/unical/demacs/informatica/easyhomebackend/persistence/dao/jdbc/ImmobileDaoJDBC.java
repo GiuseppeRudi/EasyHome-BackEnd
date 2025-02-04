@@ -7,6 +7,8 @@ import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
@@ -15,9 +17,10 @@ import java.util.prefs.Preferences;
 
 import org.apache.commons.io.IOUtils;
 
+
 public class ImmobileDaoJDBC implements ImmobileDao {
     private final Connection connection;
-
+    private static final String immobiliImagesDir = String.valueOf(Path.of("immobiliImages"));
     public ImmobileDaoJDBC(Connection connection) {
         this.connection = connection;
     }
@@ -312,6 +315,25 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
         return immobiliMinimal;
     }
+
+
+    @Override
+    public void deleteimmobileID(int id) throws SQLException {
+        String query = "DELETE FROM immobile WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new SQLException("Immobile con ID " + id + " non trovato.");
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Errore durante l'eliminazione dell'immobile con ID: " + id, e);
+        }
+    }
+
+
+
 
 
 

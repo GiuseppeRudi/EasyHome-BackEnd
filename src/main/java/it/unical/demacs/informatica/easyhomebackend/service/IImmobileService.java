@@ -22,6 +22,8 @@ public interface IImmobileService {
         List<MarkerDTO> getAllMarkers();
 
         Immobile getImmobileById(int id);
+
+        void deleteImmobile(int id) throws Exception;
 }
 
 

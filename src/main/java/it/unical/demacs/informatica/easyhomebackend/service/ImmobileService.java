@@ -22,7 +22,7 @@ public class ImmobileService implements IImmobileService {
 
     private final ImmobileDao immobileDao=DBManager.getInstance().getImmobileDao();
 
-
+    public static final String immobiliImagesDir = String.valueOf(Path.of("immobiliImages"));
     public ImmobileService() {
     }
 
@@ -51,7 +51,6 @@ public class ImmobileService implements IImmobileService {
         return savedImmobile.orElseThrow(() -> new RuntimeException("Immobile non trovato dopo il salvataggio"));
     }
 
-    private static final String immobiliImagesDir = "immobiliImages/";
 
     private void saveImmagini(Immobile immobile, List<MultipartFile> foto) throws Exception {
         int immobileDir = immobile.getId();
@@ -115,6 +114,39 @@ public class ImmobileService implements IImmobileService {
         Optional<Immobile> immobile = immobileDao.findById(id);
         return immobile.orElse(null);
     }
+    @Override
+    public void deleteImmobile(int id) throws Exception {
+            deleteImmobileImages(id);
+            immobileDao.deleteimmobileID(id);
+    }
+
+    private void deleteImmobileImages(int immobileId) throws Exception {
+        File immobileDirectory = new File(immobiliImagesDir +"\\" + immobileId);
+
+        if (immobileDirectory.exists() && immobileDirectory.isDirectory()) {
+            File[] files = immobileDirectory.listFiles();
+
+            if (files != null) {
+
+                for (File file : files) {
+                    if (file.exists() && !file.delete()) {
+                        throw new Exception("Impossibile eliminare il file: " + file.getAbsolutePath());
+                    }
+                }
+            }
+
+            // Dopo aver eliminato i file, ora possiamo eliminare la cartella
+            if (!immobileDirectory.delete()) {
+                throw new Exception("Impossibile eliminare la cartella: " + immobileDirectory.getAbsolutePath());
+            }
+        } else {
+            System.out.println("Cartella inesistente: " + immobileDirectory.getAbsolutePath());
+        }
+    }
+
+
+
+
 
 
 }

@@ -7,6 +7,7 @@ import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MarkerDTO;
 import it.unical.demacs.informatica.easyhomebackend.service.IImmobileService;
 import it.unical.demacs.informatica.easyhomebackend.service.ImmobileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,6 +65,19 @@ public class ImmobileController {
         markers = immobileService.getAllMarkers();
 
         return ResponseEntity.ok(markers);
+    }
+
+    @RequestMapping(value = "/open/immobili/deleteImmobile/{id}", method = RequestMethod.DELETE)
+
+    public ResponseEntity<Void> deleteImmobile(@PathVariable("id") int id) {
+        try {
+
+            immobileService.deleteImmobile(id);
+            return ResponseEntity.noContent().build(); // Successo (204 No Content)
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Errore (500 Internal Server Error)
+        }
     }
 
 
