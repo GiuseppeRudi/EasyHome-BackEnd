@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.0
--- Dumped by pg_dump version 17.0
+-- Dumped from database version 17.2
+-- Dumped by pg_dump version 17.2
 
--- Started on 2025-02-02 10:40:50
+-- Started on 2025-02-04 12:03:51
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -21,7 +21,7 @@ SET row_security = off;
 
 DROP DATABASE "EasyHome";
 --
--- TOC entry 4887 (class 1262 OID 16849)
+-- TOC entry 4933 (class 1262 OID 25100)
 -- Name: EasyHome; Type: DATABASE; Schema: -; Owner: postgres
 --
 
@@ -44,70 +44,12 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- TOC entry 4 (class 2615 OID 2200)
--- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
---
-
-CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO pg_database_owner;
-
---
--- TOC entry 4888 (class 0 OID 0)
--- Dependencies: 4
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
---
-
-COMMENT ON SCHEMA public IS 'standard public schema';
-
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- TOC entry 223 (class 1259 OID 17057)
--- Name: recensione; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.recensione (
-    id integer NOT NULL,
-    rating integer,
-    descrizione character varying
-);
-
-
-ALTER TABLE public.recensione OWNER TO postgres;
-
---
--- TOC entry 222 (class 1259 OID 17056)
--- Name: Recensione_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public."Recensione_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Recensione_id_seq" OWNER TO postgres;
-
---
--- TOC entry 4889 (class 0 OID 0)
--- Dependencies: 222
--- Name: Recensione_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public."Recensione_id_seq" OWNED BY public.recensione.id;
-
-
---
--- TOC entry 221 (class 1259 OID 17042)
+-- TOC entry 217 (class 1259 OID 25107)
 -- Name: contatti; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -124,7 +66,7 @@ CREATE TABLE public.contatti (
 ALTER TABLE public.contatti OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 17041)
+-- TOC entry 218 (class 1259 OID 25112)
 -- Name: contatti_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -140,8 +82,8 @@ CREATE SEQUENCE public.contatti_id_seq
 ALTER SEQUENCE public.contatti_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4890 (class 0 OID 0)
--- Dependencies: 220
+-- TOC entry 4934 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: contatti_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -149,7 +91,7 @@ ALTER SEQUENCE public.contatti_id_seq OWNED BY public.contatti.id;
 
 
 --
--- TOC entry 219 (class 1259 OID 16908)
+-- TOC entry 219 (class 1259 OID 25113)
 -- Name: immobile; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -176,7 +118,7 @@ CREATE TABLE public.immobile (
 ALTER TABLE public.immobile OWNER TO postgres;
 
 --
--- TOC entry 218 (class 1259 OID 16907)
+-- TOC entry 220 (class 1259 OID 25118)
 -- Name: immobili_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -192,8 +134,8 @@ CREATE SEQUENCE public.immobili_id_seq
 ALTER SEQUENCE public.immobili_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4891 (class 0 OID 0)
--- Dependencies: 218
+-- TOC entry 4935 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: immobili_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -201,7 +143,7 @@ ALTER SEQUENCE public.immobili_id_seq OWNED BY public.immobile.id;
 
 
 --
--- TOC entry 224 (class 1259 OID 17063)
+-- TOC entry 221 (class 1259 OID 25119)
 -- Name: messaggio; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -211,7 +153,7 @@ CREATE TABLE public.messaggio (
     descrizione character varying,
     acquirente character varying,
     email character varying,
-    telefono bigint,
+    telefono character varying,
     idimmobile integer
 );
 
@@ -219,7 +161,7 @@ CREATE TABLE public.messaggio (
 ALTER TABLE public.messaggio OWNER TO postgres;
 
 --
--- TOC entry 225 (class 1259 OID 17066)
+-- TOC entry 222 (class 1259 OID 25124)
 -- Name: messaggio_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -235,8 +177,8 @@ CREATE SEQUENCE public.messaggio_id_seq
 ALTER SEQUENCE public.messaggio_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4892 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 4936 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: messaggio_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -244,7 +186,48 @@ ALTER SEQUENCE public.messaggio_id_seq OWNED BY public.messaggio.id;
 
 
 --
--- TOC entry 217 (class 1259 OID 16850)
+-- TOC entry 224 (class 1259 OID 25150)
+-- Name: recensione; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.recensione (
+    id integer NOT NULL,
+    rating integer,
+    descrizione character varying,
+    acquirente character varying,
+    idimmobile integer
+);
+
+
+ALTER TABLE public.recensione OWNER TO postgres;
+
+--
+-- TOC entry 225 (class 1259 OID 25155)
+-- Name: recensione_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.recensione_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.recensione_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4937 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: recensione_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.recensione_id_seq OWNED BY public.recensione.id;
+
+
+--
+-- TOC entry 223 (class 1259 OID 25125)
 -- Name: utente; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -270,7 +253,7 @@ CREATE TABLE public.utente (
 ALTER TABLE public.utente OWNER TO postgres;
 
 --
--- TOC entry 4715 (class 2604 OID 17045)
+-- TOC entry 4761 (class 2604 OID 25130)
 -- Name: contatti id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -278,7 +261,7 @@ ALTER TABLE ONLY public.contatti ALTER COLUMN id SET DEFAULT nextval('public.con
 
 
 --
--- TOC entry 4714 (class 2604 OID 16911)
+-- TOC entry 4762 (class 2604 OID 25131)
 -- Name: immobile id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -286,7 +269,7 @@ ALTER TABLE ONLY public.immobile ALTER COLUMN id SET DEFAULT nextval('public.imm
 
 
 --
--- TOC entry 4717 (class 2604 OID 17067)
+-- TOC entry 4763 (class 2604 OID 25132)
 -- Name: messaggio id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -294,54 +277,45 @@ ALTER TABLE ONLY public.messaggio ALTER COLUMN id SET DEFAULT nextval('public.me
 
 
 --
--- TOC entry 4716 (class 2604 OID 17060)
--- Name: recensione id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.recensione ALTER COLUMN id SET DEFAULT nextval('public."Recensione_id_seq"'::regclass);
-
-
---
--- TOC entry 4877 (class 0 OID 17042)
--- Dependencies: 221
+-- TOC entry 4919 (class 0 OID 25107)
+-- Dependencies: 217
 -- Data for Name: contatti; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 4875 (class 0 OID 16908)
+-- TOC entry 4921 (class 0 OID 25113)
 -- Dependencies: 219
 -- Data for Name: immobile; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.immobile VALUES (33, 'fdhdg', 'Appartamento', 'dfdgssdfg', 'Affitto', 3658, 0, 0, 0, 0, 'fsfgdf', 'Catanzaro', 0, 0, '{"immobiliImages/33/Screenshot (1) - Copia.png","immobiliImages/33/Screenshot (1).png"}', 'prova');
-INSERT INTO public.immobile VALUES (34, 'sgdfgdfgd', 'Appartamento', 'fdfg', 'Vendita', 5365, 0, 0, 0, 0, 'sfgsfgs', 'Catanzaro', 41.5019168, 12.6301828, '{"immobiliImages/34/Screenshot (1).png"}', 'prova');
-INSERT INTO public.immobile VALUES (29, 'tyutuy', 'Villa', 'ryurtyu', 'Vendita', 654768, 0, 0, 0, 0, 'dgfhdfgj', 'Catanzaro', 34.65475677, 56.56476563, '{"immobiliImages/29/Screenshot 2024-02-14 113114.png","immobiliImages/29/Screenshot 2024-02-14 113200.png"}', NULL);
-INSERT INTO public.immobile VALUES (30, 'dfafg', 'Appartamento', 'adfag', 'Affitto', 62353, 0, 0, 0, 0, 'ghjdhg', 'Catanzaro', 34.65475677, 56.56476563, '{"immobiliImages/30/Screenshot 2024-02-14 113114.png","immobiliImages/30/Screenshot 2024-02-14 113234.png"}', NULL);
-INSERT INTO public.immobile VALUES (31, 'dfgh', 'Villa', 'dfgdhg', 'Affitto', 347, 0, 0, 0, 0, 'dfghdg', 'Catanzaro', 34.65475677, 56.56476563, '{"immobiliImages/31/Screenshot (12) - Copia.png","immobiliImages/31/Screenshot (12).png"}', 'prova');
-INSERT INTO public.immobile VALUES (32, 'ryutyi', 'Casa', 'htruj', 'Vendita', 348, 0, 0, 0, 0, 'yurtuy', 'Catanzaro', 34.65475677, 56.56476563, '{"immobiliImages/32/Screenshot 2023-07-23 154509.png"}', 'prova');
+INSERT INTO public.immobile VALUES (36, 'fef', 'Villa', 'vvdd', 'Vendita', 2, 0, 0, 0, 0, 'fefef', 'c', 38.5742874, 16.5657335, '{immobiliImages/36/1737447259840.jpg}', 'prova');
+INSERT INTO public.immobile VALUES (37, 'Rudi ', 'Villa', 'belllsia', 'Vendita', 2, 0, 0, 0, 0, 'ciao', 'reggio', 38.2698384, 16.2803362, '{immobiliImages/37/logoRistoranteZeno.jpg}', 'GiuseppeRudi');
+INSERT INTO public.immobile VALUES (38, 'Villa A schiera nuova costruzione ', 'Villa', 'Lavori ultimati a fine 2024 , con impianto di riscaldamento a pavimento. Infissi di nuova generazione e classe energetica A.', 'Vendita', 200000, 120, 6, 2, 1988, 'Mia ', 'Reggio di Calabria', 38.3159017, 16.3111645, '{"immobiliImages38/UC4 SSD AUTENTIZAZIONE (3).jpg","immobiliImages38/UC2 SSD GESTIONE RICHIESTE (7).jpg","immobiliImages38/UC2 SSD GESTIONE RICHIESTE (6).jpg","immobiliImages38/UC2 SSD GESTIONE RICHIESTE (5).jpg"}', 'MirkoSonotaca');
 
 
 --
--- TOC entry 4880 (class 0 OID 17063)
--- Dependencies: 224
+-- TOC entry 4923 (class 0 OID 25119)
+-- Dependencies: 221
 -- Data for Name: messaggio; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public.messaggio VALUES (1, 'jvdvvd', 'coijccio', 'MirkoSonotaca', 'sonotacamirko@gmail.com', '3479975255', 38);
 
 
 --
--- TOC entry 4879 (class 0 OID 17057)
--- Dependencies: 223
+-- TOC entry 4926 (class 0 OID 25150)
+-- Dependencies: 224
 -- Data for Name: recensione; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public.recensione VALUES (1, 4, 'scc', 'MirkoSonotaca', 38);
 
 
 --
--- TOC entry 4873 (class 0 OID 16850)
--- Dependencies: 217
+-- TOC entry 4925 (class 0 OID 25125)
+-- Dependencies: 223
 -- Data for Name: utente; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -355,20 +329,12 @@ INSERT INTO public.utente VALUES ('ertyerty', '$2a$10$ZkvimygmE0XRzPpDVBhakOs0wr
 INSERT INTO public.utente VALUES ('ciccio', '$2a$10$Xctu8hyLvoishOo836xPju18k1B2KVgn4ksXId8wCMamILmcs3M7y', 'ROLE_USER', 'the', 'yjtiuit', '', 'yruyruy', 'etruy', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO public.utente VALUES ('genny', '$2a$10$umDZ5caFgHkvjPbcNAgLJefdr4lnR/GZnxvN1FLqbjPGZtl5raiBm', 'ROLE_USER', 'erter', 'terterte', '62563-03-24', 'dfghdghdg', 'cici@com', 'dfghdf', 'ghdfghd', '123456', 'eryhtrh', 'male', 'fghdghdgd', 'fghd');
 INSERT INTO public.utente VALUES ('sofa', '$2a$10$oNGUwjqbfSWiQMnI/3lhtOnNOigMHV9rkcmr2n2JKPZr6xt4TAJ5m', 'ROLE_USER', 'dfgdfg', 'dfgsdfg', '0235-12-23', 'dfgdf', 'sfdsdfh@ggn.bn', 'gsdfhgfh', 'sdfgsdfg', '123123123', 'adgsdfh', 'male', '13245', 'fgsdfgdfhsgfjsgj');
+INSERT INTO public.utente VALUES ('MirkoSonotaca', '$2a$10$nJ3ctArInK3CvH2ajnGrh.sigJHgBAnvcvspK2Sjgq7YEQrqZgz3S', 'ROLE_USER', 'Mirko', 'Sonotaca', '2003-03-29', 'Italiana', 'sonotacamirko@gmail.com', 'Reggio Calabria', 'Locri', '3479975255', 'Via Emilio Segrè n 1 , Rende, CS ', 'other', '89046', 'SMTMRK03C29D976R');
 
 
 --
--- TOC entry 4893 (class 0 OID 0)
--- Dependencies: 222
--- Name: Recensione_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public."Recensione_id_seq"', 1, false);
-
-
---
--- TOC entry 4894 (class 0 OID 0)
--- Dependencies: 220
+-- TOC entry 4938 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: contatti_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -376,25 +342,34 @@ SELECT pg_catalog.setval('public.contatti_id_seq', 1, false);
 
 
 --
--- TOC entry 4895 (class 0 OID 0)
--- Dependencies: 218
+-- TOC entry 4939 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: immobili_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.immobili_id_seq', 34, true);
+SELECT pg_catalog.setval('public.immobili_id_seq', 38, true);
 
 
 --
--- TOC entry 4896 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 4940 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: messaggio_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.messaggio_id_seq', 1, false);
+SELECT pg_catalog.setval('public.messaggio_id_seq', 1, true);
 
 
 --
--- TOC entry 4723 (class 2606 OID 17051)
+-- TOC entry 4941 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: recensione_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.recensione_id_seq', 1, true);
+
+
+--
+-- TOC entry 4765 (class 2606 OID 25135)
 -- Name: contatti contatti_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -403,7 +378,7 @@ ALTER TABLE ONLY public.contatti
 
 
 --
--- TOC entry 4725 (class 2606 OID 17049)
+-- TOC entry 4767 (class 2606 OID 25137)
 -- Name: contatti contatti_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -412,7 +387,7 @@ ALTER TABLE ONLY public.contatti
 
 
 --
--- TOC entry 4721 (class 2606 OID 16916)
+-- TOC entry 4769 (class 2606 OID 25139)
 -- Name: immobile immobili_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -421,7 +396,7 @@ ALTER TABLE ONLY public.immobile
 
 
 --
--- TOC entry 4727 (class 2606 OID 17072)
+-- TOC entry 4771 (class 2606 OID 25141)
 -- Name: messaggio messaggio_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -430,7 +405,7 @@ ALTER TABLE ONLY public.messaggio
 
 
 --
--- TOC entry 4719 (class 2606 OID 16854)
+-- TOC entry 4773 (class 2606 OID 25143)
 -- Name: utente utente_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -438,7 +413,7 @@ ALTER TABLE ONLY public.utente
     ADD CONSTRAINT utente_pkey PRIMARY KEY (username);
 
 
--- Completed on 2025-02-02 10:40:51
+-- Completed on 2025-02-04 12:03:51
 
 --
 -- PostgreSQL database dump complete
