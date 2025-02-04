@@ -13,7 +13,9 @@ public interface IImmobileService {
 
         Immobile createImmobile(Immobile nuovoImmobile, List<MultipartFile> foto, String user) throws Exception;
 
-        List<Immobile> getImmobiliFiltered(String tipo, String categoria, String provincia);
+    void updateImmobile(Immobile immobile, List<MultipartFile> foto, String user) throws Exception;
+
+    List<Immobile> getImmobiliFiltered(String tipo, String categoria, String provincia);
 
         Optional<Immobile> getImmobile(int id);
 
@@ -24,6 +26,8 @@ public interface IImmobileService {
         Immobile getImmobileById(int id);
 
         void deleteImmobile(int id) throws Exception;
+
+        List<ImmobileMinimal> getImmobiliMinimalByUsername(String username);
 }
 
 

@@ -44,4 +44,8 @@ public interface ImmobileDao {
         Optional<Immobile> findById(int id);
 
         void deleteimmobileID(int id) throws SQLException;
+
+        void update(Immobile immobile, String user);
+
+        List<ImmobileMinimal> getImmobiliMinimalByUsername(String username);
 }

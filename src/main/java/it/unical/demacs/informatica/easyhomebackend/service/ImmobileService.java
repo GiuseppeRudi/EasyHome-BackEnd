@@ -51,10 +51,31 @@ public class ImmobileService implements IImmobileService {
         return savedImmobile.orElseThrow(() -> new RuntimeException("Immobile non trovato dopo il salvataggio"));
     }
 
+    @Override
+    public void updateImmobile(Immobile immobile, List<MultipartFile> foto, String user) throws Exception {
+        // Validazione dei campi obbligatori
+
+        if (immobile.getNome() == null || immobile.getPrezzo() <= 0) {
+            throw new IllegalArgumentException("I dati dell'immobile non sono validi");
+        }
+        try {
+            // Salvataggio dell'immobile
+            this.immobileDao.update(immobile,user);
+        } catch (Exception e) {
+            // Gestione delle eccezioni
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante il salvataggio dell'immobile", e);
+        }
+        Optional<Immobile> savedImmobile = getImmobile(immobile.getId());
+        if (savedImmobile.isPresent()) {
+            saveImmagini(savedImmobile.get(), foto);
+            immobileDao.update(savedImmobile.get(), user);
+        }
+    }
 
     private void saveImmagini(Immobile immobile, List<MultipartFile> foto) throws Exception {
         int immobileDir = immobile.getId();
-        File directory = new File(immobiliImagesDir + immobileDir);
+        File directory = new File(immobiliImagesDir + "/" + immobileDir);
         if (!directory.exists() && !directory.mkdirs()) {
             throw new Exception("Could not create directory");
         }
@@ -62,29 +83,13 @@ public class ImmobileService implements IImmobileService {
         List<String> immagini = new ArrayList<>();
         for (MultipartFile f : foto) {
             String fileName = f.getOriginalFilename();
-            Path path = Path.of(immobiliImagesDir + immobileDir, fileName);
+            Path path = Path.of(immobiliImagesDir + "/" + immobileDir, fileName);
             Files.copy(f.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            immagini.add(immobiliImagesDir + immobileDir + "/" + fileName);
+            immagini.add(immobiliImagesDir + "/" + immobileDir + "/" + fileName);
         }
         immobile.setFotoPaths(immagini);
     }
 
-    //    private void saveImmagini(Immobile immobile, List<MultipartFile> foto) throws Exception {
-//        Long travelDirectory = travel.getId();
-//        File directory = new File(TRAVEL_IMAGES_DIR + travelDirectory);
-//        if (!directory.exists() && !directory.mkdirs()) {
-//            throw new Exception("Could not create directory");
-//        }
-//        deleteExistingFiles(directory.listFiles());
-//        List<String> imagesPaths = new ArrayList<>();
-//        for (MultipartFile travelImage : travelImages) {
-//            String fileName = travel.getId() + '-' + travelImage.getOriginalFilename();
-//            Path path = Path.of(TRAVEL_IMAGES_DIR + travelDirectory, fileName);
-//            Files.copy(travelImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-//            imagesPaths.add(fileName);
-//        }
-//        travel.setImagesPaths(imagesPaths);
-//    }
 
     private void deleteExistingFiles(File[] existingFiles) throws Exception {
         if (existingFiles != null) {
@@ -135,6 +140,11 @@ public class ImmobileService implements IImmobileService {
     public void deleteImmobile(int id) throws Exception {
             deleteImmobileImages(id);
             immobileDao.deleteimmobileID(id);
+    }
+
+    @Override
+    public List<ImmobileMinimal> getImmobiliMinimalByUsername(String username) {
+        return immobileDao.getImmobiliMinimalByUsername(username);
     }
 
     private void deleteImmobileImages(int immobileId) throws Exception {

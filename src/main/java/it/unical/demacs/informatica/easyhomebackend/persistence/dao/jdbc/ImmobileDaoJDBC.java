@@ -283,7 +283,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 pstmt.setString(paramIndex++, categoria);
             }
             if (!Objects.equals(provincia, "Tutte")) {
-                pstmt.setString(paramIndex++, provincia);
+                pstmt.setString(paramIndex, provincia);
             }
 
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -332,9 +332,78 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         }
     }
 
+    @Override
+    public void update(Immobile immobile, String user) {
+        // Verifica che l'immobile abbia un ID valido
+        if (immobile.getId() == null) {
+            throw new IllegalArgumentException("ID immobile mancante per l'aggiornamento");
+        }
 
+        String queryUpdate =
+                "UPDATE immobile SET " +
+                        "nome = ?, " +
+                        "tipo = ?, " +
+                        "descrizione = ?, " +
+                        "categoria = ?, " +
+                        "prezzo = ?, " +
+                        "mq = ?, " +
+                        "camere = ?, " +
+                        "bagni = ?, " +
+                        "anno = ?, " +
+                        "etichetta = ?, " +
+                        "provincia = ?, " +
+                        "latitudine = ?, " +
+                        "longitudine = ?, " +
+                        "immagini = ?, " +
+                        "venditore = ? " +
+                        "WHERE id = ?";
 
+        try (PreparedStatement statement = connection.prepareStatement(queryUpdate)) {
+            // Imposta i parametri per l'UPDATE
+            statement.setString(1, immobile.getNome());
+            statement.setString(2, immobile.getTipo());
+            statement.setString(3, immobile.getDescrizione());
+            statement.setString(4, immobile.getCategoria());
+            statement.setDouble(5, immobile.getPrezzo());
+            statement.setInt(6, immobile.getMq());
+            statement.setInt(7, immobile.getCamere());
+            statement.setInt(8, immobile.getBagni());
+            statement.setInt(9, immobile.getAnno());
+            statement.setString(10, immobile.getEtichetta());
+            statement.setString(11, immobile.getProvincia());
+            statement.setDouble(12, immobile.getLatitudine());
+            statement.setDouble(13, immobile.getLongitudine());
 
+            // Conversione lista immagini in SQL Array
+            Array sqlArray = connection.createArrayOf("text", immobile.getFotoPaths().toArray());
+            statement.setArray(14, sqlArray);
+
+            statement.setString(15, user);
+            statement.setInt(16, immobile.getId()); // ID per WHERE
+
+            int affectedRows = statement.executeUpdate();
+
+            // Controlla se l'aggiornamento ha avuto effetto
+            if (affectedRows == 0) {
+                throw new SQLException("Aggiornamento fallito: nessun immobile trovato con ID " + immobile.getId());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante l'aggiornamento dell'immobile", e);
+        }
+    }
+
+    @Override
+    public List<ImmobileMinimal> getImmobiliMinimalByUsername(String username) {
+        List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
+
+        List<Immobile> immobili = DBManager.getInstance().getUserDao().findByPrimaryKey(username).getImmobili();
+        for(Immobile imm: immobili){
+            immobiliMinimal.add(new ImmobileMinimal(imm.getId(), imm.getNome(), imm.getPrezzo(), imm.getTipo(), imm.getCategoria(), imm.getMq(), imm.getFotoPaths().getFirst()));
+        }
+        return immobiliMinimal;
+    }
 
 
     @Override

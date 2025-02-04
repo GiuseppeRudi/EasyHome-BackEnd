@@ -25,6 +25,14 @@ public class ImmobileController {
     @RequestMapping(value = "/auth/immobili/createImmobile", method = RequestMethod.POST)
     public ResponseEntity<Void> createImmobile(
             @ModelAttribute ImmobileDto immobileDto) throws Exception {
+        Immobile nuovoImmobile = componiImmobile(immobileDto);
+
+
+        this.immobileService.createImmobile(nuovoImmobile,immobileDto.getFoto(),immobileDto.getUser());
+        return ResponseEntity.ok().build();
+    }
+
+    private Immobile componiImmobile(@ModelAttribute ImmobileDto immobileDto) {
         Immobile nuovoImmobile = new Immobile();
         nuovoImmobile.setId(null);
         nuovoImmobile.setNome(immobileDto.getNome());
@@ -41,9 +49,7 @@ public class ImmobileController {
         nuovoImmobile.setLatitudine(immobileDto.getLatitudine());
         nuovoImmobile.setLongitudine(immobileDto.getLongitudine());
         nuovoImmobile.setFotoPaths(new ArrayList<>());
-
-        this.immobileService.createImmobile(nuovoImmobile,immobileDto.getFoto(),immobileDto.getUser());
-        return ResponseEntity.ok().build();
+        return nuovoImmobile;
     }
 
 
@@ -55,7 +61,15 @@ public class ImmobileController {
 
         // Utilizza i parametri per filtrare i risultati
         List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliFilteredMinimal(tipo,categoria,provincia);
+        return ResponseEntity.ok(immobiliMinimal);
+    }
 
+    @RequestMapping(value = "/open/immobili/{username}", method = RequestMethod.GET)
+    public ResponseEntity<List<ImmobileMinimal>> getImmobiliMinimalByUsername(
+            @PathVariable("username") String username) {
+
+        // Utilizza i parametri per filtrare i risultati
+        List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliMinimalByUsername(username);
         return ResponseEntity.ok(immobiliMinimal);
     }
 
@@ -80,6 +94,13 @@ public class ImmobileController {
         }
     }
 
+    @RequestMapping(value = "/open/immobili/updateImmobile/{id}", method = RequestMethod.POST)
+    public ResponseEntity<Void> updateImmobile(@ModelAttribute ImmobileDto immobileDto) throws Exception {
+        Immobile nuovoImmobile = componiImmobile(immobileDto);
+        this.immobileService.updateImmobile(nuovoImmobile,immobileDto.getFoto(),immobileDto.getUser());
+        return ResponseEntity.ok().build();
+    }
+
 
 
     @GetMapping("/auth/dettaglio/{id}")
@@ -92,8 +113,5 @@ public class ImmobileController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
-
 
 }

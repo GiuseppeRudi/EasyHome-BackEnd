@@ -38,7 +38,7 @@ public class MessaggioDaoJDBC implements MessaggioDao {
             UserDao utenteDao = DBManager.getInstance().getUserDao();
             Utente utente = utenteDao.findByPrimaryKey(acquirente);
             s.setString(5, utente.getEmail());
-            s.setLong(6, Integer.parseInt(utente.getPhoneNumber()));
+            s.setLong(6, Long.parseLong(utente.getPhoneNumber()));
             s.setInt(7, immobileId);
 
             s.executeUpdate();
