@@ -402,6 +402,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         for(Immobile imm: immobili){
             immobiliMinimal.add(new ImmobileMinimal(imm.getId(), imm.getNome(), imm.getPrezzo(), imm.getTipo(), imm.getCategoria(), imm.getMq(), imm.getFotoPaths().getFirst()));
         }
+        System.out.println("porco dio  Minimal: " + immobiliMinimal);
         return immobiliMinimal;
     }
 

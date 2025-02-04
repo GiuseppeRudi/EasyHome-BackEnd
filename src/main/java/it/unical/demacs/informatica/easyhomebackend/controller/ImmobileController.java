@@ -59,12 +59,11 @@ public class ImmobileController {
             @RequestParam(value = "categoria", required = false) String categoria,
             @RequestParam(value = "provincia", required = false) String provincia) {
 
-        // Utilizza i parametri per filtrare i risultati
         List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliFilteredMinimal(tipo,categoria,provincia);
         return ResponseEntity.ok(immobiliMinimal);
     }
 
-    @RequestMapping(value = "/open/immobili/{username}", method = RequestMethod.GET)
+    @RequestMapping(value = "/auth/immobili/{username}", method = RequestMethod.GET)
     public ResponseEntity<List<ImmobileMinimal>> getImmobiliMinimalByUsername(
             @PathVariable("username") String username) {
 
@@ -81,7 +80,7 @@ public class ImmobileController {
         return ResponseEntity.ok(markers);
     }
 
-    @RequestMapping(value = "/open/immobili/deleteImmobile/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/auth/immobili/deleteImmobile/{id}", method = RequestMethod.DELETE)
 
     public ResponseEntity<Void> deleteImmobile(@PathVariable("id") int id) {
         try {
@@ -94,9 +93,10 @@ public class ImmobileController {
         }
     }
 
-    @RequestMapping(value = "/open/immobili/updateImmobile/{id}", method = RequestMethod.POST)
-    public ResponseEntity<Void> updateImmobile(@ModelAttribute ImmobileDto immobileDto) throws Exception {
+    @RequestMapping(value = "/auth/immobili/updateImmobile/{id}", method = RequestMethod.POST)
+    public ResponseEntity<Void> updateImmobile(@PathVariable("id") int id, @ModelAttribute ImmobileDto immobileDto) throws Exception {
         Immobile nuovoImmobile = componiImmobile(immobileDto);
+        nuovoImmobile.setId(id);
         this.immobileService.updateImmobile(nuovoImmobile,immobileDto.getFoto(),immobileDto.getUser());
         return ResponseEntity.ok().build();
     }
