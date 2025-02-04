@@ -29,6 +29,7 @@ public class UserDaoJDBC  implements UserDao {
     @Override
     public Utente findByPrimaryKey(String username) {
         String sql = "SELECT * FROM utente WHERE username = ?";
+        System.out.println(username);
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();

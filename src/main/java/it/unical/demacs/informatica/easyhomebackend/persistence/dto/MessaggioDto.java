@@ -13,5 +13,5 @@ public class MessaggioDto {
     private int idImmobile;
     private String nomeImmobile;
     private String email;
-    private int telefono;
+    private String telefono;
 }

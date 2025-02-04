@@ -19,6 +19,8 @@ public class MessaggioController {
     public ResponseEntity<Void> createMessaggio(
             @ModelAttribute MessaggioDto messaggioDto) {
 
+        System.out.println(messaggioDto.getAcquirente());
+        System.out.println("porco");
         Messaggio messaggio=new Messaggio(messaggioDto.getOggetto(), messaggioDto.getDescrizione());
         this.messaggioService.createMessaggio(messaggio,messaggioDto.getAcquirente(),messaggioDto.getIdImmobile());
         return ResponseEntity.ok().build();

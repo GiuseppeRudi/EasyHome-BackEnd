@@ -12,7 +12,7 @@ public class Messaggio {
     private String descrizione;
     protected Utente acquirente;
     private String email;
-    private int telefono;
+    private String telefono;
     protected Immobile immobile;
 
     public Messaggio(String oggetto, String descrizione) {

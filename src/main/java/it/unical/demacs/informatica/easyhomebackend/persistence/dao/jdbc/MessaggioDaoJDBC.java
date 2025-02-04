@@ -20,6 +20,7 @@ public class MessaggioDaoJDBC implements MessaggioDao {
     public MessaggioDaoJDBC(Connection connection) {
         this.connection = connection;
     }
+
     @Override
     public void save(Messaggio messaggio,String acquirente,int immobileId) {
         String query = "INSERT INTO messaggio (id, oggetto, descrizione, acquirente, email, telefono, idImmobile) " +
@@ -37,7 +38,7 @@ public class MessaggioDaoJDBC implements MessaggioDao {
             UserDao utenteDao = DBManager.getInstance().getUserDao();
             Utente utente = utenteDao.findByPrimaryKey(acquirente);
             s.setString(5, utente.getEmail());
-            s.setInt(6, Integer.parseInt(utente.getPhoneNumber()));
+            s.setString(6, utente.getPhoneNumber());
             s.setInt(7, immobileId);
 
             s.executeUpdate();
@@ -71,7 +72,7 @@ public class MessaggioDaoJDBC implements MessaggioDao {
                 messaggio.setDescrizione(resultSet.getString("descrizione"));
                 messaggio.setAcquirente(resultSet.getString("acquirente"));
                 messaggio.setEmail(resultSet.getString("email"));
-                messaggio.setTelefono(resultSet.getInt("telefono"));
+                messaggio.setTelefono(resultSet.getString("telefono"));
                 ImmobileDao immobileDao = DBManager.getInstance().getImmobileDao();
                 Immobile immobile = immobileDao.findByPrimaryKey(resultSet.getInt("idimmobile"));
                 messaggio.setIdImmobile(immobile.getId());
