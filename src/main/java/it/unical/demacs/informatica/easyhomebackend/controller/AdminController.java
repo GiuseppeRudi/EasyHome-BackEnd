@@ -26,13 +26,6 @@ public class AdminController {
     }
 
 
-    public ResponseEntity<Void> createUser(@RequestBody Utente utente) {
-        utente.setRole(UserRole.ROLE_USER);
-        this.userservice.createUser(utente);
-
-        return  ResponseEntity.ok().build();
-    }
-
     @PostMapping("/change_role")
     public ResponseEntity<?> changeUserRole(@RequestBody Map<String, String> request) {
         String username = request.get("username");
@@ -60,9 +53,4 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
-
-
-
-
-
 }

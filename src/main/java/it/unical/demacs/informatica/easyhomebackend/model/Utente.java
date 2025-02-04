@@ -1,5 +1,6 @@
 package it.unical.demacs.informatica.easyhomebackend.model;
 
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +32,8 @@ public class Utente implements UserDetails {
     private String cap;
     private String id;
     protected List<Immobile> immobili;
+    protected List<MessaggioDto> messaggi;
+    protected List<Recensione> recensioni;
 
     public Utente(String username, String password, UserRole role, String firstName, String lastName, String birthdate, String province, String city, String country, String email, String phoneNumber, String address, String gender, String cap, String id) {
         this.username = username;
