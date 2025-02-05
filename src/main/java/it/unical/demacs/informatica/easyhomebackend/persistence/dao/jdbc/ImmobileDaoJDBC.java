@@ -62,12 +62,12 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 resultSet.getInt("camere"),
                 resultSet.getInt("bagni"),
                 resultSet.getInt("anno"),
-                resultSet.getString("etichetta"),
+                resultSet.getString("data"),
                 resultSet.getString("provincia"),
                 resultSet.getDouble("latitudine"),
                 resultSet.getDouble("longitudine"),
                 immagini,
-                0
+                null
         );
     }
 
@@ -149,7 +149,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         immobile.setCamere(rs.getInt("camere"));
         immobile.setBagni(rs.getInt("bagni"));
         immobile.setAnno(rs.getInt("anno"));
-        immobile.setEtichetta(rs.getString("etichetta"));
+        immobile.setData(rs.getString("data"));
         immobile.setProvincia(rs.getString("provincia"));
         immobile.setLatitudine(rs.getDouble("latitudine"));
         immobile.setLongitudine(rs.getDouble("longitudine"));
@@ -190,6 +190,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 "longitudine=EXCLUDED.longitudine, " +
                 "immagini=EXCLUDED.immagini, " +
                 "venditore=EXCLUDED.venditore " +
+                "prezzo_scontato=EXCLUDED.prezzo_scontato " +
                 "RETURNING id";
         try (PreparedStatement statementImmobile = connection.prepareStatement(queryImmobile, Statement.RETURN_GENERATED_KEYS)) {
             if (immobile.getId() != null) {
@@ -365,7 +366,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         "camere = ?, " +
                         "bagni = ?, " +
                         "anno = ?, " +
-                        "etichetta = ?, " +
+                        "data = ?, " +
                         "provincia = ?, " +
                         "latitudine = ?, " +
                         "longitudine = ?, " +
@@ -384,7 +385,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statement.setInt(7, immobile.getCamere());
             statement.setInt(8, immobile.getBagni());
             statement.setInt(9, immobile.getAnno());
-            statement.setString(10, immobile.getEtichetta());
+            statement.setString(10, immobile.getData());
             statement.setString(11, immobile.getProvincia());
             statement.setDouble(12, immobile.getLatitudine());
             statement.setDouble(13, immobile.getLongitudine());
@@ -468,7 +469,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         rs.getInt("camere"),
                         rs.getInt("bagni"),
                         rs.getInt("anno"),
-                        rs.getString("etichetta"),
+                        rs.getString("data"),
                         rs.getString("provincia"),
                         rs.getDouble("latitudine"),
                         rs.getDouble("longitudine"),

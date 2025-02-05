@@ -17,7 +17,7 @@ public class ImmobileDto {
     private int camere;
     private int bagni;
     private int anno;
-    private String etichetta;
+    private String data;
     private String provincia;
     private double latitudine;
     private double longitudine;
