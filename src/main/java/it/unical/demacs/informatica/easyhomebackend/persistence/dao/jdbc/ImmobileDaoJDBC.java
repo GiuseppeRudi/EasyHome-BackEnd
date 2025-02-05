@@ -172,8 +172,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public void save(Immobile immobile, String user) {
-        String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, data, provincia, latitudine, longitudine, immagini, venditore,prezzo_scontato) " +
-                "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+        String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, data, provincia, latitudine, longitudine, immagini, venditore) " +
+                "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON CONFLICT (id) DO UPDATE SET " +
                 "nome=EXCLUDED.nome, " +
                 "tipo=EXCLUDED.tipo, " +
@@ -361,7 +361,6 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         "tipo = ?, " +
                         "descrizione = ?, " +
                         "categoria = ?, " +
-                        "prezzo = ?, " +
                         "mq = ?, " +
                         "camere = ?, " +
                         "bagni = ?, " +
@@ -381,23 +380,22 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statement.setString(2, immobile.getTipo());
             statement.setString(3, immobile.getDescrizione());
             statement.setString(4, immobile.getCategoria());
-            statement.setDouble(5, immobile.getPrezzo());
-            statement.setInt(6, immobile.getMq());
-            statement.setInt(7, immobile.getCamere());
-            statement.setInt(8, immobile.getBagni());
-            statement.setInt(9, immobile.getAnno());
-            statement.setString(10, immobile.getData());
-            statement.setString(11, immobile.getProvincia());
-            statement.setDouble(12, immobile.getLatitudine());
-            statement.setDouble(13, immobile.getLongitudine());
+            statement.setInt(5, immobile.getMq());
+            statement.setInt(6, immobile.getCamere());
+            statement.setInt(7, immobile.getBagni());
+            statement.setInt(8, immobile.getAnno());
+            statement.setString(9, immobile.getData());
+            statement.setString(10, immobile.getProvincia());
+            statement.setDouble(11, immobile.getLatitudine());
+            statement.setDouble(12, immobile.getLongitudine());
 
             // Conversione lista immagini in SQL Array
             Array sqlArray = connection.createArrayOf("text", immobile.getFotoPaths().toArray());
-            statement.setArray(14, sqlArray);
+            statement.setArray(13, sqlArray);
 
-            statement.setString(15, user);
-            statement.setInt(16, immobile.getId()); // ID per WHERE
-            statement.setInt(17, immobile.getPrezzo_scontato());
+            statement.setString(14, user);
+            statement.setDouble(15, immobile.getPrezzo_scontato());
+            statement.setInt(16, immobile.getId());
 
             int affectedRows = statement.executeUpdate();
 
