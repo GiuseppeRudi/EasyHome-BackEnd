@@ -106,7 +106,7 @@ CREATE TABLE public.immobile (
     camere integer,
     bagni integer,
     anno integer,
-    etichetta character varying(100),
+    data character varying(100),
     provincia character varying,
     latitudine double precision,
     longitudine double precision,
