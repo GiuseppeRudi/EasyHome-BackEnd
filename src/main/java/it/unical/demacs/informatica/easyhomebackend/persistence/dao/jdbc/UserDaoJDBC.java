@@ -29,7 +29,7 @@ public class UserDaoJDBC  implements UserDao {
     @Override
     public Utente findByPrimaryKey(String username) {
         String sql = "SELECT * FROM utente WHERE username = ?";
-        System.out.println(username);
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
@@ -93,13 +93,6 @@ public class UserDaoJDBC  implements UserDao {
         String query = "DELETE FROM utente WHERE username = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, utente.getUsername());
-            int rowsAffected = statement.executeUpdate();
-
-            if (rowsAffected == 0) {
-                System.out.println("Nessun utente trovato con username: " + utente.getUsername());
-            } else {
-                System.out.println("Utente con username: " + utente.getUsername() + " eliminato con successo.");
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,11 +128,7 @@ public class UserDaoJDBC  implements UserDao {
             statement.setString(1, newRole.name()); // Converte l'enum UserRole in stringa
             statement.setString(2, username);
 
-            int rowsUpdated = statement.executeUpdate(); // Esegue l'aggiornamento
 
-            if (rowsUpdated == 0) {
-                System.out.println("Nessun utente trovato con username: " + username);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
