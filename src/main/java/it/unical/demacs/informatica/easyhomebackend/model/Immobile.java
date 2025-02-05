@@ -18,7 +18,7 @@ public class Immobile {
     private int camere;
     private int bagni;
     private int anno;
-    private String etichetta;
+    private String data;
     private String provincia;
     private double latitudine;
     private double longitudine;
@@ -32,7 +32,7 @@ public class Immobile {
     public Immobile() {
     }
 
-    public Immobile(int id, String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String etichetta, String provincia, double latitudine, double longitudine, List<String> fotoPaths) {
+    public Immobile(int id, String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String data, String provincia, double latitudine, double longitudine, List<String> fotoPaths) {
         this.nome = nome;
         this.id = id;
         this.fotoPaths = fotoPaths;  // Assegna il file come byte array
@@ -44,7 +44,7 @@ public class Immobile {
         this.camere = camere;
         this.bagni = bagni;
         this.anno = anno;
-        this.etichetta = etichetta;
+        this.data = data;
         this.provincia = provincia;
         this.latitudine = latitudine;
         this.longitudine = longitudine;

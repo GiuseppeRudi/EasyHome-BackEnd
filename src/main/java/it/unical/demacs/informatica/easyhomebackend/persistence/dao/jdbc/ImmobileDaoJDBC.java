@@ -62,7 +62,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 resultSet.getInt("camere"),
                 resultSet.getInt("bagni"),
                 resultSet.getInt("anno"),
-                resultSet.getString("etichetta"),
+                resultSet.getString("data"),
                 resultSet.getString("provincia"),
                 resultSet.getDouble("latitudine"),
                 resultSet.getDouble("longitudine"),
@@ -148,7 +148,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         immobile.setCamere(rs.getInt("camere"));
         immobile.setBagni(rs.getInt("bagni"));
         immobile.setAnno(rs.getInt("anno"));
-        immobile.setEtichetta(rs.getString("etichetta"));
+        immobile.setData(rs.getString("data"));
         immobile.setProvincia(rs.getString("provincia"));
         immobile.setLatitudine(rs.getDouble("latitudine"));
         immobile.setLongitudine(rs.getDouble("longitudine"));
@@ -171,7 +171,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public void save(Immobile immobile, String user) {
-        String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine, immagini, venditore) " +
+        String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, data, provincia, latitudine, longitudine, immagini, venditore) " +
                 "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON CONFLICT (id) DO UPDATE SET " +
                 "nome=EXCLUDED.nome, " +
@@ -183,7 +183,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 "camere=EXCLUDED.camere, " +
                 "bagni=EXCLUDED.bagni, " +
                 "anno=EXCLUDED.anno, " +
-                "etichetta=EXCLUDED.etichetta, " +
+                "data=EXCLUDED.data, " +
                 "provincia=EXCLUDED.provincia, " +
                 "latitudine=EXCLUDED.latitudine, " +
                 "longitudine=EXCLUDED.longitudine, " +
@@ -205,7 +205,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statementImmobile.setInt(8, immobile.getCamere());
             statementImmobile.setInt(9, immobile.getBagni());
             statementImmobile.setInt(10, immobile.getAnno());
-            statementImmobile.setString(11, immobile.getEtichetta());
+            statementImmobile.setString(11, immobile.getData());
             statementImmobile.setString(12, immobile.getProvincia());
             statementImmobile.setDouble(13, immobile.getLatitudine());
             statementImmobile.setDouble(14, immobile.getLongitudine());
@@ -362,7 +362,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         "camere = ?, " +
                         "bagni = ?, " +
                         "anno = ?, " +
-                        "etichetta = ?, " +
+                        "data = ?, " +
                         "provincia = ?, " +
                         "latitudine = ?, " +
                         "longitudine = ?, " +
@@ -381,7 +381,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statement.setInt(7, immobile.getCamere());
             statement.setInt(8, immobile.getBagni());
             statement.setInt(9, immobile.getAnno());
-            statement.setString(10, immobile.getEtichetta());
+            statement.setString(10, immobile.getData());
             statement.setString(11, immobile.getProvincia());
             statement.setDouble(12, immobile.getLatitudine());
             statement.setDouble(13, immobile.getLongitudine());
@@ -444,7 +444,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         rs.getInt("camere"),
                         rs.getInt("bagni"),
                         rs.getInt("anno"),
-                        rs.getString("etichetta"),
+                        rs.getString("data"),
                         rs.getString("provincia"),
                         rs.getDouble("latitudine"),
                         rs.getDouble("longitudine"),

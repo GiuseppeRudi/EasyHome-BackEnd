@@ -44,7 +44,7 @@ public class ImmobileController {
         nuovoImmobile.setCamere(immobileDto.getCamere());
         nuovoImmobile.setBagni(immobileDto.getBagni());
         nuovoImmobile.setAnno(immobileDto.getAnno());
-        nuovoImmobile.setEtichetta(immobileDto.getEtichetta());
+        nuovoImmobile.setData(immobileDto.getData());
         nuovoImmobile.setProvincia(immobileDto.getProvincia());
         nuovoImmobile.setLatitudine(immobileDto.getLatitudine());
         nuovoImmobile.setLongitudine(immobileDto.getLongitudine());
