@@ -26,6 +26,8 @@ public interface IImmobileService {
         void deleteImmobile(int id) throws Exception;
 
         List<ImmobileMinimal> getImmobiliMinimalByUsername(String username);
+
+        void updatePrezzoById(int id, int prezzo);
 }
 
 

@@ -48,4 +48,6 @@ public interface ImmobileDao {
         void update(Immobile immobile, String user);
 
         List<ImmobileMinimal> getImmobiliMinimalByUsername(String username);
+
+        void updatePrezzoById(int id, int prezzo);
 }

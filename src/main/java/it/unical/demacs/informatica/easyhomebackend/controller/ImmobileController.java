@@ -59,10 +59,7 @@ public class ImmobileController {
             @RequestParam(value = "categoria", required = false) String categoria,
             @RequestParam(value = "provincia", required = false) String provincia){
 
-        System.out.println(tipo);
-        System.out.println(categoria);
-        System.out.println(provincia);
-
+        // Utilizza i parametri per filtrare i risultati
         List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliFilteredMinimal(tipo,categoria,provincia);
         return ResponseEntity.ok(immobiliMinimal);
     }
@@ -105,7 +102,11 @@ public class ImmobileController {
         return ResponseEntity.ok().build();
     }
 
-
+    @RequestMapping(value = "/auth/immobili/updateImmobile/prezzo/{id}", method = RequestMethod.POST)
+    public ResponseEntity<Void> updatePrezzoById(@PathVariable int id, @RequestParam(value = "prezzo") int prezzo) throws Exception {
+        this.immobileService.updatePrezzoById(id,prezzo);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/auth/dettaglio/{id}")
     public ResponseEntity<Immobile> getImmobileById(@PathVariable int id) {
