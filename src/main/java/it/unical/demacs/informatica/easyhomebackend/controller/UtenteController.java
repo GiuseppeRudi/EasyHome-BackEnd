@@ -3,10 +3,7 @@ package it.unical.demacs.informatica.easyhomebackend.controller;
 
 
 
-import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
-import it.unical.demacs.informatica.easyhomebackend.model.Messaggio;
-import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
-import it.unical.demacs.informatica.easyhomebackend.model.Utente;
+import it.unical.demacs.informatica.easyhomebackend.model.*;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 import it.unical.demacs.informatica.easyhomebackend.service.IUserService;
@@ -63,6 +60,18 @@ public class UtenteController {
             Utente utente = utenteOptional.get();  // Estrai l'utente dall'Optional
             System.out.println(utente.getMessaggi());
             return ResponseEntity.ok(utente.getMessaggi());
+        } else {
+            return ResponseEntity.notFound().build();  // Rispondi con un 404 se l'utente non è trovato
+        }
+    }
+
+    @GetMapping("/auth/{username}/recensioni")
+    public ResponseEntity<List<Recensione>> getRecensioniUtente(@PathVariable String username) {
+        Optional<Utente> utenteOptional = userService.getUser(username);
+        if (utenteOptional.isPresent()) {
+            Utente utente = utenteOptional.get();  // Estrai l'utente dall'Optional
+            System.out.println(utente.getRecensioni());
+            return ResponseEntity.ok(utente.getRecensioni());
         } else {
             return ResponseEntity.notFound().build();  // Rispondi con un 404 se l'utente non è trovato
         }

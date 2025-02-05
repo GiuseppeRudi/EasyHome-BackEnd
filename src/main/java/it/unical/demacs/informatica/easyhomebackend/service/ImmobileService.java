@@ -147,6 +147,11 @@ public class ImmobileService implements IImmobileService {
         return immobileDao.getImmobiliMinimalByUsername(username);
     }
 
+    @Override
+    public void updatePrezzoById(int id, int prezzo) {
+        immobileDao.updatePrezzoById(id,prezzo);
+    }
+
     private void deleteImmobileImages(int immobileId) throws Exception {
         File immobileDirectory = new File(immobiliImagesDir +"\\" + immobileId);
 

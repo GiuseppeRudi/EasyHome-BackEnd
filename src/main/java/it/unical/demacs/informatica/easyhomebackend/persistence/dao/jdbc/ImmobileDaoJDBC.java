@@ -405,6 +405,27 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         return immobiliMinimal;
     }
 
+    @Override
+    public void updatePrezzoById(int id, int prezzo) {
+        String query = "UPDATE immobile SET prezzo_scontato = ? WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setDouble(1, prezzo);
+            statement.setInt(2, id);
+
+            int affectedRows = statement.executeUpdate();
+
+            if(affectedRows == 0) {
+                throw new SQLException("Nessun immobile trovato con ID: " + id);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante l'aggiornamento del prezzo", e);
+        }
+    }
+
 
     @Override
     public Optional<Immobile> findById(int id) {
