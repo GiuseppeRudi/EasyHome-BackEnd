@@ -25,7 +25,7 @@ public class Immobile {
     private List<String> fotoPaths;
     private List<byte[]> foto;
     private Utente utente;
-    private int prezzo_scontato;
+    private Integer prezzo_scontato;
 
     protected List<Messaggio> messaggi;
 
@@ -33,7 +33,7 @@ public class Immobile {
     public Immobile() {
     }
 
-    public Immobile(int id, String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String data, String provincia, double latitudine, double longitudine, List<String> fotoPaths) {
+    public Immobile(int id, String nome, String tipo, String descrizione, String categoria, int prezzo, int mq, int camere, int bagni, int anno, String data, String provincia, double latitudine, double longitudine, List<String> fotoPaths, Integer prezzo_scontato) {
         this.nome = nome;
         this.id = id;
         this.fotoPaths = fotoPaths;  // Assegna il file come byte array

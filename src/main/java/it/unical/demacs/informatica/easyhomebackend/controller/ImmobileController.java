@@ -49,6 +49,7 @@ public class ImmobileController {
         nuovoImmobile.setLatitudine(immobileDto.getLatitudine());
         nuovoImmobile.setLongitudine(immobileDto.getLongitudine());
         nuovoImmobile.setFotoPaths(new ArrayList<>());
+        nuovoImmobile.setPrezzo_scontato(null);
         return nuovoImmobile;
     }
 

@@ -67,7 +67,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 resultSet.getDouble("latitudine"),
                 resultSet.getDouble("longitudine"),
                 immagini,
-                null
+                resultSet.getInt("prezzo_scontato")
         );
     }
 
@@ -173,7 +173,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     @Override
     public void save(Immobile immobile, String user) {
         String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, data, provincia, latitudine, longitudine, immagini, venditore,prezzo_scontato) " +
-                "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON CONFLICT (id) DO UPDATE SET " +
                 "nome=EXCLUDED.nome, " +
                 "tipo=EXCLUDED.tipo, " +
@@ -189,7 +189,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 "latitudine=EXCLUDED.latitudine, " +
                 "longitudine=EXCLUDED.longitudine, " +
                 "immagini=EXCLUDED.immagini, " +
-                "venditore=EXCLUDED.venditore " +
+                "venditore=EXCLUDED.venditore, " +
                 "prezzo_scontato=EXCLUDED.prezzo_scontato " +
                 "RETURNING id";
         try (PreparedStatement statementImmobile = connection.prepareStatement(queryImmobile, Statement.RETURN_GENERATED_KEYS)) {
@@ -262,7 +262,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
         List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
 
-        String query = "SELECT id, nome, prezzo, tipo, categoria, mq, immagini FROM immobile";
+        String query = "SELECT id, nome, prezzo, tipo, categoria, mq, immagini, prezzo_scontato FROM immobile";
         List<String> conditions = new ArrayList<>();
 
         if (!Objects.equals(tipo, "Tutti")) {
@@ -306,8 +306,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                     int prezzo = rs.getInt("prezzo");
                     String tipoImmobile = rs.getString("tipo");
                     String categoriaImmobile = rs.getString("categoria");
+                    int prezzo_scontato = rs.getInt("prezzo_scontato");
                     int mq = rs.getInt("mq");
-
                     // Recupero della prima immagine dell'array
                     Array immaginiArray = rs.getArray("immagini");
                     String primaImmagine = null;
@@ -319,7 +319,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         }
                     }
 
-                    immobiliMinimal.add(new ImmobileMinimal(id, nome, prezzo, tipoImmobile, categoriaImmobile, mq, primaImmagine));
+                    immobiliMinimal.add(new ImmobileMinimal(id, nome, prezzo, tipoImmobile, categoriaImmobile, mq, primaImmagine,prezzo_scontato));
                 }
             }
         } catch (SQLException e) {
@@ -371,7 +371,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         "latitudine = ?, " +
                         "longitudine = ?, " +
                         "immagini = ?, " +
-                        "venditore = ? " +
+                        "venditore = ?, " +
+                        "prezzo_scontato = ? " +
                         "WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(queryUpdate)) {
@@ -396,6 +397,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
             statement.setString(15, user);
             statement.setInt(16, immobile.getId()); // ID per WHERE
+            statement.setInt(17, immobile.getPrezzo_scontato());
 
             int affectedRows = statement.executeUpdate();
 
@@ -416,7 +418,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
         List<Immobile> immobili = DBManager.getInstance().getUserDao().findByPrimaryKey(username).getImmobili();
         for(Immobile imm: immobili){
-            immobiliMinimal.add(new ImmobileMinimal(imm.getId(), imm.getNome(), imm.getPrezzo(), imm.getTipo(), imm.getCategoria(), imm.getMq(), imm.getFotoPaths().getFirst()));
+            immobiliMinimal.add(new ImmobileMinimal(imm.getId(), imm.getNome(), imm.getPrezzo(), imm.getTipo(), imm.getCategoria(), imm.getMq(), imm.getFotoPaths().getFirst(),imm.getPrezzo_scontato()));
         }
         System.out.println("porco dio  Minimal: " + immobiliMinimal);
         return immobiliMinimal;
@@ -454,28 +456,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String[] immaginiArray = (String[]) rs.getArray("immagini").getArray(); // Converte in String[]
-                List<String> immaginiList = immaginiArray != null ? Arrays.asList(immaginiArray) : new ArrayList<>();
-
                 String venditore = rs.getString("venditore");
-                Immobile immobile = new Immobile(
-                        rs.getInt("id"),
-                        rs.getString("nome"),
-                        rs.getString("tipo"),
-                        rs.getString("descrizione"),
-                        rs.getString("categoria"),
-                        rs.getInt("prezzo"),
-                        rs.getInt("mq"),
-                        rs.getInt("camere"),
-                        rs.getInt("bagni"),
-                        rs.getInt("anno"),
-                        rs.getString("data"),
-                        rs.getString("provincia"),
-                        rs.getDouble("latitudine"),
-                        rs.getDouble("longitudine"),
-                        immaginiList, // Lista di immagini
-                        rs.getInt("prezzo_scontato")
-                );
+                Immobile immobile = createImm(rs);
                 immobile.setUtente(DBManager.getInstance().getUserDao().findByPrimaryKey(venditore));
                 return Optional.of(immobile);
             }
@@ -483,9 +465,6 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return Optional.empty();
     }
-
-
 }
