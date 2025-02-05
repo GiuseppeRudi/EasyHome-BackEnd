@@ -66,7 +66,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 resultSet.getString("provincia"),
                 resultSet.getDouble("latitudine"),
                 resultSet.getDouble("longitudine"),
-                immagini
+                immagini,
+                0
         );
     }
 
@@ -171,7 +172,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
     @Override
     public void save(Immobile immobile, String user) {
-        String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, etichetta, provincia, latitudine, longitudine, immagini, venditore) " +
+        String queryImmobile = "INSERT INTO immobile (id, nome, tipo, descrizione, categoria, prezzo, mq, camere, bagni, anno, data, provincia, latitudine, longitudine, immagini, venditore,prezzo_scontato) " +
                 "VALUES (COALESCE(?, nextval('immobili_id_seq')),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON CONFLICT (id) DO UPDATE SET " +
                 "nome=EXCLUDED.nome, " +
@@ -183,7 +184,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                 "camere=EXCLUDED.camere, " +
                 "bagni=EXCLUDED.bagni, " +
                 "anno=EXCLUDED.anno, " +
-                "etichetta=EXCLUDED.etichetta, " +
+                "data=EXCLUDED.data, " +
                 "provincia=EXCLUDED.provincia, " +
                 "latitudine=EXCLUDED.latitudine, " +
                 "longitudine=EXCLUDED.longitudine, " +
@@ -205,7 +206,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statementImmobile.setInt(8, immobile.getCamere());
             statementImmobile.setInt(9, immobile.getBagni());
             statementImmobile.setInt(10, immobile.getAnno());
-            statementImmobile.setString(11, immobile.getEtichetta());
+            statementImmobile.setString(11, immobile.getData());
             statementImmobile.setString(12, immobile.getProvincia());
             statementImmobile.setDouble(13, immobile.getLatitudine());
             statementImmobile.setDouble(14, immobile.getLongitudine());
@@ -255,6 +256,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
 
 
 
+    // VA SISTEMATO TUTTO
     @Override
     public List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia) {
         List<ImmobileMinimal> immobiliMinimal = new ArrayList<>();
@@ -344,6 +346,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         }
     }
 
+    //VA SISTEMA TUTTO
     @Override
     public void update(Immobile immobile, String user) {
         // Verifica che l'immobile abbia un ID valido
@@ -469,7 +472,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         rs.getString("provincia"),
                         rs.getDouble("latitudine"),
                         rs.getDouble("longitudine"),
-                        immaginiList // Lista di immagini
+                        immaginiList, // Lista di immagini
+                        rs.getInt("prezzo_scontato")
                 );
                 immobile.setUtente(DBManager.getInstance().getUserDao().findByPrimaryKey(venditore));
                 return Optional.of(immobile);
