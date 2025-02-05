@@ -30,19 +30,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Disabilita CSRF
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/api/login").permitAll() // Accesso senza autenticazione
-                        .requestMatchers("/api/open/**").permitAll() // Accesso senza autenticazione
-                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN" )// Accesso senza autenticazione
-                        .requestMatchers("/api/auth/**").authenticated() // Richiede autenticazione
-                        .anyRequest().authenticated() // Tutte le altre richieste richiedono autenticazione
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/open/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN" )
+                        .requestMatchers("/api/auth/**").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) // Gestione delle richieste non autorizzate
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
                 .formLogin(form -> form
-                        .loginProcessingUrl("/api/login") // Endpoint per il login
+                        .loginProcessingUrl("/api/login")
                         .successHandler((req, res, auth) -> {
-                            // Ottieni il nome e il ruolo dell'utente autenticato
+
                             String username = auth.getName();
                             String role = auth.getAuthorities().stream()
                                     .map(authority -> authority.getAuthority())
@@ -62,20 +62,20 @@ public class SecurityConfig {
                         })
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/api/logout") // Endpoint per il logout
+                        .logoutUrl("/api/logout")
                         .logoutSuccessHandler((req, res, auth) -> {
-                            // Invalidare la sessione al logout
-                            req.getSession().invalidate();  // Invalida la sessione
+
+                            req.getSession().invalidate();
                             res.addHeader("Set-Cookie", "JSESSIONID=; Path=/; HttpOnly; Max-Age=0");
-                            res.setStatus(200);  // Risposta di successo
+                            res.setStatus(200);
                             res.getWriter().write("{\"message\": \"Logout effettuato con successo\"}");
                         })
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Crea la sessione se necessario
-                        .invalidSessionUrl("/api/login") // URL di reindirizzamento se la sessione è invalida
-                        .maximumSessions(1) // Limita il numero di sessioni simultanee per utente
-                        .expiredUrl("/api/login?expired=true") // URL di reindirizzamento quando la sessione è scaduta
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .invalidSessionUrl("/api/login")
+                        .maximumSessions(1)
+                        .expiredUrl("/api/login?expired=true")
                 );
 
         return http.build();
@@ -86,7 +86,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Utilizza BCrypt per la codifica delle password
+        return new BCryptPasswordEncoder();
     }
 
 
