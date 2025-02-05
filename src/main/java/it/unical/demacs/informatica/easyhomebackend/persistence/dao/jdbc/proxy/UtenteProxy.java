@@ -33,11 +33,15 @@ public class UtenteProxy extends Utente {
         return this.messaggi;
     }
 
-//    @Override
-//    public List<Recensione> getRecensioni() {
-//        if(this.recensioni==null){
-//            this.recensioni = DBManager.getInstance().getRecensioneDao().findByUserId(this.getUsername());
-//        }
-//        return this.recensioni;
-//    }
+    @Override
+    public List<Recensione> getRecensioni() {
+        if(this.recensioni==null){
+            this.recensioni = new ArrayList<>();
+            for(Immobile imm: this.getImmobili()){
+                List<Recensione> recensioniPerId =DBManager.getInstance().getRecensioneDao().findByImmobileId(imm.getId());
+                this.recensioni.addAll(recensioniPerId);
+            }
+        }
+        return this.recensioni;
+    }
 }

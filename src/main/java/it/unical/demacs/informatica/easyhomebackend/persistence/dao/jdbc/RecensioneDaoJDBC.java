@@ -1,12 +1,14 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 
+import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.Recensione;
-import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.RecensioneDao;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecensioneDaoJDBC implements RecensioneDao {
     private final Connection connection;
@@ -47,5 +49,29 @@ public class RecensioneDaoJDBC implements RecensioneDao {
             e.printStackTrace();
             throw new RuntimeException("Errore durante il salvataggio del messaggio", e);
         }
+    }
+
+    @Override
+    public List<Recensione> findByImmobileId(int idImmobile) {
+        String sql = "SELECT * FROM recensione WHERE idimmobile = ?";  // Query per ottenere username e ruolo
+        List<Recensione> recensioni = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, idImmobile);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Recensione recensione = new Recensione(resultSet.getInt("rating"),resultSet.getString("descrizione"));
+                recensione.setAcquirente(resultSet.getString("acquirente"));
+                ImmobileDao immobileDao = DBManager.getInstance().getImmobileDao();
+                Immobile immobile = immobileDao.findByPrimaryKey(resultSet.getInt("idimmobile"));
+                recensione.setIdImmobile(immobile.getId());
+                recensioni.add(recensione);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return recensioni;
     }
 }
