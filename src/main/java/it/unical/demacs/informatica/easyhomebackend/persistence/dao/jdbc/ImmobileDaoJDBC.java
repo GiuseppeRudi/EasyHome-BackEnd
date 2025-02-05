@@ -284,7 +284,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             query += " WHERE " + String.join(" AND ", conditions);
         }
 
-        System.out.println("SQL Query: " + query);
+
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             int paramIndex = 1;
@@ -326,7 +326,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             throw new RuntimeException("Errore durante l'esecuzione della query", e);
         }
 
-        System.out.println(immobiliMinimal);
+
         return immobiliMinimal;
     }
 
@@ -350,9 +350,35 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     //VA SISTEMA TUTTO
     @Override
     public void update(Immobile immobile, String user) {
-        // Verifica che l'immobile abbia un ID valido
+
+
         if (immobile.getId() == null) {
             throw new IllegalArgumentException("ID immobile mancante per l'aggiornamento");
+        }
+
+        String querySelect = "SELECT prezzo FROM immobile WHERE id = ?";
+        Double prezzoAttuale = null;
+
+        // Recupera il prezzo attuale dal database
+        try (PreparedStatement statementSelect = connection.prepareStatement(querySelect)) {
+            statementSelect.setInt(1, immobile.getId());
+            try (ResultSet resultSet = statementSelect.executeQuery()) {
+                if (resultSet.next()) {
+                    prezzoAttuale = resultSet.getDouble("prezzo");
+                } else {
+                    throw new SQLException("Immobile non trovato con ID " + immobile.getId());
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante il recupero del prezzo dell'immobile", e);
+        }
+
+        // Se il prezzo passato è diverso da quello attuale, aggiorna prezzo_scontato
+        Integer prezzoScontato = null;
+        if (prezzoAttuale != null && !prezzoAttuale.equals(immobile.getPrezzo())) {
+            prezzoScontato = immobile.getPrezzo(); // Imposta il prezzo passato nell'oggetto immobile in prezzo_scontato
+        } else {
+            prezzoScontato = immobile.getPrezzo_scontato(); // Mantieni invariato il prezzo_scontato
         }
 
         String queryUpdate =
@@ -371,7 +397,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         "longitudine = ?, " +
                         "immagini = ?, " +
                         "venditore = ?, " +
-                        "prezzo_scontato = ? " +
+                        "prezzo_scontato = ? " + // Aggiorna solo il campo prezzo_scontato
                         "WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(queryUpdate)) {
@@ -394,8 +420,8 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             statement.setArray(13, sqlArray);
 
             statement.setString(14, user);
-            statement.setDouble(15, immobile.getPrezzo_scontato());
-            statement.setInt(16, immobile.getId());
+            statement.setInt(15, prezzoScontato); // Aggiorna solo il campo prezzo_scontato
+            statement.setInt(16, immobile.getId()); // ID per WHERE
 
             int affectedRows = statement.executeUpdate();
 
@@ -405,10 +431,11 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Errore durante l'aggiornamento dell'immobile", e);
         }
     }
+
+
 
     @Override
     public List<ImmobileMinimal> getImmobiliMinimalByUsername(String username) {
@@ -418,30 +445,11 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         for(Immobile imm: immobili){
             immobiliMinimal.add(new ImmobileMinimal(imm.getId(), imm.getNome(), imm.getPrezzo(), imm.getTipo(), imm.getCategoria(), imm.getMq(), imm.getFotoPaths().getFirst(),imm.getPrezzo_scontato()));
         }
-        System.out.println("porco dio  Minimal: " + immobiliMinimal);
+
         return immobiliMinimal;
     }
 
-    @Override
-    public void updatePrezzoById(int id, int prezzo) {
-        String query = "UPDATE immobile SET prezzo_scontato = ? WHERE id = ?";
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-
-            statement.setDouble(1, prezzo);
-            statement.setInt(2, id);
-
-            int affectedRows = statement.executeUpdate();
-
-            if(affectedRows == 0) {
-                throw new SQLException("Nessun immobile trovato con ID: " + id);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante l'aggiornamento del prezzo", e);
-        }
-    }
 
 
     @Override

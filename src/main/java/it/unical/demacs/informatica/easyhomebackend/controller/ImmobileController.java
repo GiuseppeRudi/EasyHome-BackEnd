@@ -103,15 +103,10 @@ public class ImmobileController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/auth/immobili/updateImmobile/prezzo/{id}", method = RequestMethod.POST)
-    public ResponseEntity<Void> updatePrezzoById(@PathVariable int id, @RequestParam(value = "prezzo") int prezzo) throws Exception {
-        this.immobileService.updatePrezzoById(id,prezzo);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/auth/dettaglio/{id}")
     public ResponseEntity<Immobile> getImmobileById(@PathVariable int id) {
-        System.out.println("ciao");
+
         Immobile immobile = immobileService.getImmobileById(id);
         if (immobile != null) {
             return ResponseEntity.ok(immobile);

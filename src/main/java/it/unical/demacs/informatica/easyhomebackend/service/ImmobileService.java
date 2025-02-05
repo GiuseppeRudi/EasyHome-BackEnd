@@ -59,17 +59,13 @@ public class ImmobileService implements IImmobileService {
             throw new IllegalArgumentException("I dati dell'immobile non sono validi");
         }
         try {
+            saveImmagini(immobile, foto);
             // Salvataggio dell'immobile
             this.immobileDao.update(immobile,user);
         } catch (Exception e) {
             // Gestione delle eccezioni
             e.printStackTrace();
             throw new RuntimeException("Errore durante il salvataggio dell'immobile", e);
-        }
-        Optional<Immobile> savedImmobile = getImmobile(immobile.getId());
-        if (savedImmobile.isPresent()) {
-            saveImmagini(savedImmobile.get(), foto);
-            immobileDao.update(savedImmobile.get(), user);
         }
     }
 
@@ -143,10 +139,7 @@ public class ImmobileService implements IImmobileService {
         return immobileDao.getImmobiliMinimalByUsername(username);
     }
 
-    @Override
-    public void updatePrezzoById(int id, int prezzo) {
-        immobileDao.updatePrezzoById(id,prezzo);
-    }
+
 
     private void deleteImmobileImages(int immobileId) throws Exception {
         File immobileDirectory = new File(immobiliImagesDir +"\\" + immobileId);
