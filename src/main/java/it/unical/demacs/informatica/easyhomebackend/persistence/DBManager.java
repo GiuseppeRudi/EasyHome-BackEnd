@@ -1,6 +1,5 @@
 package it.unical.demacs.informatica.easyhomebackend.persistence;
 
-import it.unical.demacs.informatica.easyhomebackend.model.Recensione;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.*;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.*;
 import lombok.Getter;
@@ -18,6 +17,10 @@ public class DBManager {
     @Getter
     private Connection connection;
 
+    // Variabili separate per username e password
+    private static final String DB_USER = "postgres";  // Username del database
+    private static final String DB_PASSWORD = "rudi";  // Password del database
+
     private DBManager() {
         try {
             // Carica il driver JDBC (opzionale per le versioni più recenti di Java)
@@ -26,8 +29,8 @@ public class DBManager {
             // Crea la connessione utilizzando i dettagli del database
             connection = DriverManager.getConnection(
                     "jdbc:postgresql://localhost:5432/EasyHome", // URL del database
-                    "postgres", // Nome utente
-                    "postgres" // Password
+                    DB_USER, // Nome utente da variabile separata
+                    DB_PASSWORD // Password da variabile separata
             );
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -56,7 +59,6 @@ public class DBManager {
         return messaggioDao;
     }
 
-
     public ImmobileDao getImmobileDao() {
         if (immobileDao == null) {
             immobileDao = new ImmobileDaoJDBC(getConnection());
@@ -70,7 +72,6 @@ public class DBManager {
         }
         return recensioneDao;
     }
-
 
     public ContattiDao getContattiDao() {
         if (contattiDao == null) {
