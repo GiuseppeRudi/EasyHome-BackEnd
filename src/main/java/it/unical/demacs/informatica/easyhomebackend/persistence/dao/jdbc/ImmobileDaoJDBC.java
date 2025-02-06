@@ -4,8 +4,10 @@ import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.RecensioneDao;
 
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
@@ -18,6 +20,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         this.connection = connection;
     }
 
+    public static final String immobiliImagesDir = String.valueOf(Path.of("immobiliImages"));
     @Override
     public Immobile findByPrimaryKey(int id) {
         String query = "SELECT * FROM immobile WHERE id = ?";
@@ -323,10 +326,37 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         return immobiliMinimal;
     }
 
+    private void deleteImmobileImages(int immobileId) throws Exception {
+        File immobileDirectory = new File(immobiliImagesDir +"\\" + immobileId);
+
+        if (immobileDirectory.exists() && immobileDirectory.isDirectory()) {
+            File[] files = immobileDirectory.listFiles();
+
+            if (files != null) {
+
+                for (File file : files) {
+                    if (file.exists() && !file.delete()) {
+                        throw new Exception("Impossibile eliminare il file: " + file.getAbsolutePath());
+                    }
+                }
+            }
+
+            // Dopo aver eliminato i file, ora possiamo eliminare la cartella
+            if (!immobileDirectory.delete()) {
+                throw new Exception("Impossibile eliminare la cartella: " + immobileDirectory.getAbsolutePath());
+            }
+        } else {
+            System.out.println("Cartella inesistente: " + immobileDirectory.getAbsolutePath());
+        }
+    }
+
 
 
     @Override
-    public void deleteimmobileID(int id) throws SQLException {
+    public void deleteimmobileID(int id) throws Exception {
+        deleteImmobileImages(id);
+        RecensioneDao recensioneDao = DBManager.getInstance().getRecensioneDao();
+        recensioneDao.deleteByImmobileId(id);
         String query = "DELETE FROM immobile WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);

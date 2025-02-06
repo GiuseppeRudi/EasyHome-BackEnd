@@ -11,6 +11,8 @@ public interface RecensioneDao {
 
     void save(Recensione recensione);
 
+    void deleteByImmobileId(int idImmobile);
+
     List<Recensione> findByImmobileId(int idImmobile);
 
     void delete(int id);

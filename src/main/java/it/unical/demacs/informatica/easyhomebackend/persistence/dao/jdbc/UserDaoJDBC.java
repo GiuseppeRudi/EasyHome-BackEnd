@@ -95,7 +95,7 @@ public class UserDaoJDBC  implements UserDao {
 
     }
     @Override
-    public void delete(Utente utente) throws SQLException {
+    public void delete(Utente utente) throws Exception {
         String query = "DELETE FROM utente WHERE username = ?";
         List<Immobile> immobili = utente.getImmobili();
         List<MessaggioDto> messaggi = utente.getMessaggi();

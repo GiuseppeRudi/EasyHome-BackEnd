@@ -52,6 +52,20 @@ public class RecensioneDaoJDBC implements RecensioneDao {
     }
 
     @Override
+    public void deleteByImmobileId(int idImmobile) {
+        String sql = "DELETE FROM recensione WHERE idimmobile = ?";  // Query per eliminare recensioni di un immobile
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, idImmobile);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante l'eliminazione delle recensioni dell'immobile con ID: " + idImmobile, e);
+        }
+    }
+
+
+    @Override
     public List<Recensione> findByImmobileId(int idImmobile) {
         String sql = "SELECT * FROM recensione WHERE idimmobile = ?";  // Query per ottenere username e ruolo
         List<Recensione> recensioni = new ArrayList<>();

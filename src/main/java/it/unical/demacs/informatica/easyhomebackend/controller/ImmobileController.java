@@ -83,7 +83,6 @@ public class ImmobileController {
     }
 
     @RequestMapping(value = "/auth/immobili/deleteImmobile/{id}", method = RequestMethod.DELETE)
-
     public ResponseEntity<Void> deleteImmobile(@PathVariable("id") int id) {
         try {
 

@@ -14,7 +14,7 @@ public interface UserDao {
     Utente findByPrimaryKey(String username);
 
     void save(Utente utente);
-    void delete(Utente utente) throws SQLException;
+    void delete(Utente utente) throws Exception;
     void update(Utente utente);
 
 
