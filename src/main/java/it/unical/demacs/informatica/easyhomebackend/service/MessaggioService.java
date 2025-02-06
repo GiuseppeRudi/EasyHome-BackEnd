@@ -26,4 +26,15 @@ public class MessaggioService implements IMessaggioService {
             throw new RuntimeException("Errore durante il salvataggio dell'immobile", e);
         }
     }
+
+    @Override
+    public void deleteMessaggio(int idMessaggio) {
+        try {
+            this.messaggioDao.delete(idMessaggio);
+        } catch (Exception e) {
+            // Gestione delle eccezioni
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante il salvataggio dell'immobile", e);
+        }
+    }
 }

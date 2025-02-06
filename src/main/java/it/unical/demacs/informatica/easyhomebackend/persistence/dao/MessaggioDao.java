@@ -8,4 +8,8 @@ import java.util.List;
 public interface MessaggioDao {
     void save(Messaggio messaggio, String acquirente,int immobileId);
     List<MessaggioDto> findByImmobileId(int idImmobile);
+
+    void delete(int idMessaggio);
+
+    void deleteAllByImmobileId(int idImmobile);
 }

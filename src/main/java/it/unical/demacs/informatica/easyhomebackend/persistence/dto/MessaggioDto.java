@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessaggioDto {
+    private int id;
     private String oggetto;
     private String descrizione;
     private String acquirente;

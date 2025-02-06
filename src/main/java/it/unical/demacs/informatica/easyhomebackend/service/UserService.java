@@ -1,9 +1,9 @@
 package it.unical.demacs.informatica.easyhomebackend.service;
 
-import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
-import it.unical.demacs.informatica.easyhomebackend.model.Utente;
+import it.unical.demacs.informatica.easyhomebackend.model.*;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -42,8 +42,6 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
 
-
-
     @Override
     public List<UserRoleDto> getAllUsernamesAndRoles() {
         return this.userDao.findAllUsernamesAndRoles();
@@ -71,16 +69,13 @@ public class UserService implements IUserService, UserDetailsService {
     }
     public boolean deleteUser(String username) {
         Utente user = userDao.findByPrimaryKey(username); // Cerca l'utente per username
-        if (user != null) {
-            try {
-                userDao.delete(user); // Elimina l'utente dal database
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false; // In caso di errore durante l'eliminazione
-            }
+        try {
+            userDao.delete(user); // Elimina l'utente dal database
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // In caso di errore durante l'eliminazione
         }
-        return false; // Utente non trovato
     }
 
 

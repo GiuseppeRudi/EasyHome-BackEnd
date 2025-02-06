@@ -58,7 +58,6 @@ public class UtenteController {
         Optional<Utente> utenteOptional = userService.getUser(username);
         if (utenteOptional.isPresent()) {
             Utente utente = utenteOptional.get();  // Estrai l'utente dall'Optional
-
             return ResponseEntity.ok(utente.getMessaggi());
         } else {
             return ResponseEntity.notFound().build();  // Rispondi con un 404 se l'utente non è trovato

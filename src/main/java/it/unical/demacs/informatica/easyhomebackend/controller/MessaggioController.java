@@ -23,5 +23,11 @@ public class MessaggioController {
         this.messaggioService.createMessaggio(messaggio,messaggioDto.getAcquirente(),messaggioDto.getIdImmobile());
         return ResponseEntity.ok().build();
     }
+    @DeleteMapping("/auth/messaggi/deleteMessaggio/{id}")
+    public ResponseEntity<Void> deleteMessaggio(
+            @PathVariable int id) {
+        this.messaggioService.deleteMessaggio(id);
+        return ResponseEntity.ok().build();
+    }
 
 }

@@ -2,14 +2,12 @@ package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.Messaggio;
-import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.MessaggioDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,12 +15,13 @@ import java.util.List;
 
 public class MessaggioDaoJDBC implements MessaggioDao {
     private final Connection connection;
+
     public MessaggioDaoJDBC(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public void save(Messaggio messaggio,String acquirente,int immobileId) {
+    public void save(Messaggio messaggio, String acquirente, int immobileId) {
         String query = "INSERT INTO messaggio (id, oggetto, descrizione, acquirente, email, telefono, idImmobile) " +
                 "VALUES (COALESCE(?, nextval('messaggio_id_seq')), ?, ?, ?, ?, ?, ?) ";
         try (PreparedStatement s = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -68,6 +67,7 @@ public class MessaggioDaoJDBC implements MessaggioDao {
 
             while (resultSet.next()) {
                 MessaggioDto messaggio = new MessaggioDto();
+                messaggio.setId(resultSet.getInt("id"));
                 messaggio.setOggetto(resultSet.getString("oggetto"));
                 messaggio.setDescrizione(resultSet.getString("descrizione"));
                 messaggio.setAcquirente(resultSet.getString("acquirente"));
@@ -84,5 +84,34 @@ public class MessaggioDaoJDBC implements MessaggioDao {
         }
 
         return messaggi;
+    }
+
+    @Override
+    public void delete(int idMessaggio) {
+        String query = "DELETE FROM messaggio WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, idMessaggio);
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                System.out.println("Nessun messaggio trovato con ID: " + idMessaggio);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void deleteAllByImmobileId(int idImmobile) {
+        String query = "DELETE FROM messaggio WHERE idImmobile = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, idImmobile);
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                System.out.println("Nessun messaggio trovato con idimmobile: " + idImmobile);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
