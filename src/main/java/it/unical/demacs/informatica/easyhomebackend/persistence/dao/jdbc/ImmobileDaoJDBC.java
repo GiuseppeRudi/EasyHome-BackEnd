@@ -5,22 +5,15 @@ import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.File;
-import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.*;
-import java.util.prefs.Preferences;
-
-import org.apache.commons.io.IOUtils;
 
 
 public class ImmobileDaoJDBC implements ImmobileDao {
     private final Connection connection;
-    private static final String immobiliImagesDir = String.valueOf(Path.of("immobiliImages"));
     public ImmobileDaoJDBC(Connection connection) {
         this.connection = connection;
     }

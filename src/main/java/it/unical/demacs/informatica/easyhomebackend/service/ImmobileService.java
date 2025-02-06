@@ -119,9 +119,11 @@ public class ImmobileService implements IImmobileService {
     public List<MarkerDTO> getAllMarkers() {
         return immobileDao.findAll()
                 .stream()
+                .filter(immobile -> !"Aste".equalsIgnoreCase(immobile.getCategoria())) // Filtra gli immobili con tipologia diversa da "Aste"
                 .map(immobile -> new MarkerDTO(immobile.getLatitudine(), immobile.getLongitudine()))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public Immobile getImmobileById(int id) {
