@@ -62,6 +62,7 @@ public class RecensioneDaoJDBC implements RecensioneDao {
 
             while (resultSet.next()) {
                 Recensione recensione = new Recensione(resultSet.getInt("rating"),resultSet.getString("descrizione"));
+                recensione.setId(resultSet.getInt("id"));
                 recensione.setAcquirente(resultSet.getString("acquirente"));
                 ImmobileDao immobileDao = DBManager.getInstance().getImmobileDao();
                 Immobile immobile = immobileDao.findByPrimaryKey(resultSet.getInt("idimmobile"));
@@ -73,5 +74,19 @@ public class RecensioneDaoJDBC implements RecensioneDao {
         }
 
         return recensioni;
+    }
+
+    @Override
+    public void delete(int id) {
+        String query = "DELETE FROM recensione WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                System.out.println("Nessuna recensione trovata con id: " + id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

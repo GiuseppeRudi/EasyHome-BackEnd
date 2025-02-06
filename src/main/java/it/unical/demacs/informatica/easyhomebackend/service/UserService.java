@@ -3,11 +3,9 @@ package it.unical.demacs.informatica.easyhomebackend.service;
 import it.unical.demacs.informatica.easyhomebackend.model.*;
 import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
-import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,8 +41,8 @@ public class UserService implements IUserService, UserDetailsService {
 
 
     @Override
-    public List<UserRoleDto> getAllUsernamesAndRoles() {
-        return this.userDao.findAllUsernamesAndRoles();
+    public List<UserRoleDto> getAllUsernamesAndRoles(String username) {
+        return this.userDao.findAllUsernamesAndRoles(username);
     }
 
     @Override

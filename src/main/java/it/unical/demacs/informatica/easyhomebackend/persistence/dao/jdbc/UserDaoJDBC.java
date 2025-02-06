@@ -2,11 +2,17 @@ package it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc;
 
 
 
+import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
+import it.unical.demacs.informatica.easyhomebackend.model.Recensione;
 import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
+import it.unical.demacs.informatica.easyhomebackend.persistence.DBManager;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.ImmobileDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.MessaggioDao;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dao.RecensioneDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.UserDao;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dao.jdbc.proxy.UtenteProxy;
+import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 
@@ -89,8 +95,17 @@ public class UserDaoJDBC  implements UserDao {
 
     }
     @Override
-    public void delete(Utente utente) {
+    public void delete(Utente utente) throws SQLException {
         String query = "DELETE FROM utente WHERE username = ?";
+        List<Immobile> immobili = utente.getImmobili();
+        List<MessaggioDto> messaggi = utente.getMessaggi();
+        List<Recensione> recensioni =utente.getRecensioni();
+        ImmobileDao immobileDao = DBManager.getInstance().getImmobileDao();
+        MessaggioDao messaggioDao = DBManager.getInstance().getMessaggioDao();
+        RecensioneDao recensioneDao = DBManager.getInstance().getRecensioneDao();
+        for(Immobile imm: immobili) immobileDao.deleteimmobileID(imm.getId());
+        for(MessaggioDto mes: messaggi) messaggioDao.delete(mes.getId());
+        for(Recensione rec: recensioni) recensioneDao.delete(rec.getId());
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, utente.getUsername());
@@ -101,22 +116,24 @@ public class UserDaoJDBC  implements UserDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
 
     @Override
-    public List<UserRoleDto> findAllUsernamesAndRoles() {
-        String sql = "SELECT username, role FROM utente";  // Query per ottenere username e ruolo
+    public List<UserRoleDto> findAllUsernamesAndRoles(String username) {
+        String sql = "SELECT username, role FROM utente WHERE username!=?";  // Query per ottenere username e ruolo
         List<UserRoleDto> userList = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
 
             // Elenco di username e ruolo dalla risposta del database
             while (resultSet.next()) {
-                String username = resultSet.getString("username");
+                String user = resultSet.getString("username");
                 String role = resultSet.getString("role");
-                userList.add(new UserRoleDto(username, UserRole.valueOf(role)));  // Crea oggetti UserRoleDto
+                userList.add(new UserRoleDto(user, UserRole.valueOf(role)));  // Crea oggetti UserRoleDto
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,7 +149,7 @@ public class UserDaoJDBC  implements UserDao {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, newRole.name()); // Converte l'enum UserRole in stringa
             statement.setString(2, username);
-
+            statement.executeUpdate();
 
         } catch (Exception e) {
             e.printStackTrace();

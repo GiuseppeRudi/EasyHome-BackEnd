@@ -5,6 +5,7 @@ import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
 import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface UserDao {
@@ -13,11 +14,11 @@ public interface UserDao {
     Utente findByPrimaryKey(String username);
 
     void save(Utente utente);
-    void delete(Utente utente) ;
+    void delete(Utente utente) throws SQLException;
     void update(Utente utente);
 
 
-    List<UserRoleDto> findAllUsernamesAndRoles();
+    List<UserRoleDto> findAllUsernamesAndRoles(String username);
 
     void changeUserRole(String username, UserRole newRole);
 }

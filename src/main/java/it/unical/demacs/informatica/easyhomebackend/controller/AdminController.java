@@ -30,6 +30,7 @@ public class AdminController {
     public ResponseEntity<?> changeUserRole(@RequestBody Map<String, String> request) {
         String username = request.get("username");
         String newRole = request.get("newRole");
+        System.out.println(username + " " + newRole);
 
         if (username == null || newRole == null) {
             return ResponseEntity.badRequest().body("Errore: username e newRole sono obbligatori.");

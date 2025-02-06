@@ -16,7 +16,7 @@ public interface IUserService {
     Optional<Utente> getUser(String username);
 
 
-    List<UserRoleDto> getAllUsernamesAndRoles();
+    List<UserRoleDto> getAllUsernamesAndRoles(String username);
 
     void changeUserRole(String username, UserRole newRole);
 }
