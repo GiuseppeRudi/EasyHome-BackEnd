@@ -41,8 +41,8 @@ public class UserService implements IUserService, UserDetailsService {
 
 
     @Override
-    public List<UserRoleDto> getAllUsernamesAndRoles(String username) {
-        return this.userDao.findAllUsernamesAndRoles(username);
+    public List<UserRoleDto> getAllUsernamesAndRoles() {
+        return this.userDao.findAllUsernamesAndRoles();
     }
 
     @Override

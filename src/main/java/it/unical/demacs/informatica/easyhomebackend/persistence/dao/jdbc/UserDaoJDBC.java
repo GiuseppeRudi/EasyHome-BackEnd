@@ -121,12 +121,11 @@ public class UserDaoJDBC  implements UserDao {
 
 
     @Override
-    public List<UserRoleDto> findAllUsernamesAndRoles(String username) {
-        String sql = "SELECT username, role FROM utente WHERE username!=?";  // Query per ottenere username e ruolo
+    public List<UserRoleDto> findAllUsernamesAndRoles() {
+        String sql = "SELECT username, role FROM utente";  // Query per ottenere username e ruolo
         List<UserRoleDto> userList = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
 
             // Elenco di username e ruolo dalla risposta del database

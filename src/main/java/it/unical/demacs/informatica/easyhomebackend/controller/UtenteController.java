@@ -33,10 +33,10 @@ public class UtenteController {
         return  ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/admin/users/{username}", method = RequestMethod.GET)
-    public List<UserRoleDto> getAllUsers(@PathVariable String username) {
+    @RequestMapping(value = "/admin/users", method = RequestMethod.GET)
+    public List<UserRoleDto> getAllUsers() {
         // Usa il nuovo metodo
-        return userService.getAllUsernamesAndRoles(username);  // Restituisci la lista con username e ruolo
+        return userService.getAllUsernamesAndRoles();  // Restituisci la lista con username e ruolo
     }
 
 

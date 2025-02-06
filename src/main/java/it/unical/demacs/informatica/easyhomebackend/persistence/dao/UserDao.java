@@ -18,7 +18,7 @@ public interface UserDao {
     void update(Utente utente);
 
 
-    List<UserRoleDto> findAllUsernamesAndRoles(String username);
+    List<UserRoleDto> findAllUsernamesAndRoles();
 
     void changeUserRole(String username, UserRole newRole);
 }
