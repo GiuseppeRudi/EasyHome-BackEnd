@@ -88,73 +88,6 @@ public class ImmobileDaoJDBC implements ImmobileDao {
     }
 
     @Override
-    public List<Immobile> findFiltered(String tipo, String categoria, String provincia) {
-        List<Immobile> immobili = new ArrayList<>();
-
-
-        String query = "SELECT * FROM immobile";
-
-        List<String> conditions = new ArrayList<>();
-
-        if (!Objects.equals(tipo, "Tutti")) conditions.add("tipo = ?");
-        if (!Objects.equals(categoria, "Tutti")) conditions.add("categoria = ?");
-        if (!Objects.equals(provincia, "Tutte")) conditions.add("provincia = ?");
-
-        if (!conditions.isEmpty()) {
-            query += " WHERE " + String.join(" AND ", conditions);
-        }
-
-
-        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-
-            int paramIndex = 1;
-            if (!Objects.equals(tipo, "Tutti")) {
-                pstmt.setString(paramIndex++, tipo);
-            }
-            if (!Objects.equals(categoria, "Tutti")) {
-                pstmt.setString(paramIndex++, categoria);
-            }
-            if (!Objects.equals(provincia, "Tutte")) {
-                pstmt.setString(paramIndex, provincia);
-            }
-
-            // Esegui la query
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    Immobile immobile = mapRowToImmobile(rs);
-                    immobili.add(immobile);
-                }
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException("Errore durante l'esecuzione della query", e);
-        }
-
-        return immobili;
-    }
-
-    private Immobile mapRowToImmobile(ResultSet rs) throws Exception {
-        Immobile immobile = new Immobile();
-        immobile.setId(rs.getInt("id"));
-        immobile.setNome(rs.getString("nome"));
-        immobile.setTipo(rs.getString("tipo"));
-        immobile.setDescrizione(rs.getString("descrizione"));
-        immobile.setCategoria(rs.getString("categoria"));
-        immobile.setPrezzo(rs.getInt("prezzo"));
-        immobile.setMq(rs.getInt("mq"));
-        immobile.setCamere(rs.getInt("camere"));
-        immobile.setBagni(rs.getInt("bagni"));
-        immobile.setAnno(rs.getInt("anno"));
-        immobile.setData(rs.getString("data"));
-        immobile.setProvincia(rs.getString("provincia"));
-        immobile.setLatitudine(rs.getDouble("latitudine"));
-        immobile.setLongitudine(rs.getDouble("longitudine"));
-        immobile.setFoto(getImmagini(immobile.getId()));
-
-        return immobile;
-    }
-
-    @Override
     public List<byte[]> getImmagini(Integer id) throws Exception {
         Immobile immobile = findByPrimaryKey(id);
         List<String> immobiliFotoPath = immobile.getFotoPaths();
@@ -370,19 +303,17 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         }
     }
 
-    //VA SISTEMA TUTTO
     @Override
-    public void update(Immobile immobile, String user) {
-
+    public void update(Immobile immobile) {
 
         if (immobile.getId() == null) {
             throw new IllegalArgumentException("ID immobile mancante per l'aggiornamento");
         }
 
         String querySelect = "SELECT prezzo FROM immobile WHERE id = ?";
-        Double prezzoAttuale = null;
+        double prezzoAttuale;
 
-        // Recupera il prezzo attuale dal database
+        // Recupera il prezzo attuale e il prezzo_scontato dal database
         try (PreparedStatement statementSelect = connection.prepareStatement(querySelect)) {
             statementSelect.setInt(1, immobile.getId());
             try (ResultSet resultSet = statementSelect.executeQuery()) {
@@ -395,13 +326,11 @@ public class ImmobileDaoJDBC implements ImmobileDao {
         } catch (SQLException e) {
             throw new RuntimeException("Errore durante il recupero del prezzo dell'immobile", e);
         }
-
-        // Se il prezzo passato è diverso da quello attuale, aggiorna prezzo_scontato
         Integer prezzoScontato = null;
-        if (prezzoAttuale != null && !prezzoAttuale.equals(immobile.getPrezzo())) {
-            prezzoScontato = immobile.getPrezzo(); // Imposta il prezzo passato nell'oggetto immobile in prezzo_scontato
-        } else {
-            prezzoScontato = immobile.getPrezzo_scontato(); // Mantieni invariato il prezzo_scontato
+
+        // Se il prezzo passato è diverso, aggiorna prezzo_scontato, altrimenti lo lascia invariato
+        if(prezzoAttuale!=immobile.getPrezzo()) {
+            prezzoScontato = immobile.getPrezzo();
         }
 
         String queryUpdate =
@@ -419,8 +348,7 @@ public class ImmobileDaoJDBC implements ImmobileDao {
                         "latitudine = ?, " +
                         "longitudine = ?, " +
                         "immagini = ?, " +
-                        "venditore = ?, " +
-                        "prezzo_scontato = ? " + // Aggiorna solo il campo prezzo_scontato
+                        "prezzo_scontato = ? " + // Aggiorna solo se necessario
                         "WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(queryUpdate)) {
@@ -442,13 +370,12 @@ public class ImmobileDaoJDBC implements ImmobileDao {
             Array sqlArray = connection.createArrayOf("text", immobile.getFotoPaths().toArray());
             statement.setArray(13, sqlArray);
 
-            statement.setString(14, user);
-            statement.setInt(15, prezzoScontato); // Aggiorna solo il campo prezzo_scontato
-            statement.setInt(16, immobile.getId()); // ID per WHERE
+            if(prezzoScontato==null) statement.setNull(14,Types.INTEGER);
+            else statement.setInt(14, prezzoScontato); // Mantiene o aggiorna prezzo_scontato
+            statement.setInt(15, immobile.getId()); // ID per WHERE
 
             int affectedRows = statement.executeUpdate();
 
-            // Controlla se l'aggiornamento ha avuto effetto
             if (affectedRows == 0) {
                 throw new SQLException("Aggiornamento fallito: nessun immobile trovato con ID " + immobile.getId());
             }

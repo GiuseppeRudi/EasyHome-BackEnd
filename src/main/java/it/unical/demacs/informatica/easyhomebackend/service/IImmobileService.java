@@ -12,7 +12,7 @@ public interface IImmobileService {
 
         Immobile createImmobile(Immobile nuovoImmobile, List<MultipartFile> foto, String user) throws Exception;
 
-    void updateImmobile(Immobile immobile, List<MultipartFile> foto, String user) throws Exception;
+        void updateImmobile(Immobile immobile, List<MultipartFile> foto) throws Exception;
 
 
         Optional<Immobile> getImmobile(int id);

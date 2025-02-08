@@ -79,14 +79,11 @@ public class ImmobileController {
         // Recupera l'utente
         Optional<Utente> utenteOptional = userService.getUser(username);
 
-        // Controlla se l'utente esiste
         if (utenteOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Se non esiste, restituisci 404
         }
 
         Utente utente = utenteOptional.get();
-
-        // Se l'utente è admin, restituisci tutti gli immobili (convertendoli in ImmobileMinimal)
         if (utente.getRole() == UserRole.ROLE_ADMIN) {
             List<Immobile> tuttiGliImmobili = immobileService.getAllImmobili();
 
@@ -138,7 +135,7 @@ public class ImmobileController {
     public ResponseEntity<Void> updateImmobile(@PathVariable("id") int id, @ModelAttribute ImmobileDto immobileDto) throws Exception {
         Immobile nuovoImmobile = componiImmobile(immobileDto);
         nuovoImmobile.setId(id);
-        this.immobileService.updateImmobile(nuovoImmobile,immobileDto.getFoto(),immobileDto.getUser());
+        this.immobileService.updateImmobile(nuovoImmobile,immobileDto.getFoto());
         return ResponseEntity.ok().build();
     }
 

@@ -52,7 +52,7 @@ public class ImmobileService implements IImmobileService {
     }
 
     @Override
-    public void updateImmobile(Immobile immobile, List<MultipartFile> foto, String user) throws Exception {
+    public void updateImmobile(Immobile immobile, List<MultipartFile> foto) {
         // Validazione dei campi obbligatori
 
         if (immobile.getNome() == null || immobile.getPrezzo() <= 0) {
@@ -61,7 +61,7 @@ public class ImmobileService implements IImmobileService {
         try {
             saveImmagini(immobile, foto);
             // Salvataggio dell'immobile
-            this.immobileDao.update(immobile,user);
+            this.immobileDao.update(immobile);
         } catch (Exception e) {
             // Gestione delle eccezioni
             e.printStackTrace();
