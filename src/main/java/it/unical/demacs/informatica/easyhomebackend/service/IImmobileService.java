@@ -16,7 +16,7 @@ public interface IImmobileService {
 
 
         Optional<Immobile> getImmobile(int id);
-
+        List<Immobile> getAllImmobili();
         List<ImmobileMinimal> getImmobiliFilteredMinimal(String tipo, String categoria, String provincia);
 
         List<MarkerDTO> getAllMarkers();

@@ -7,6 +7,7 @@ import it.unical.demacs.informatica.easyhomebackend.model.*;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MessaggioDto;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.UserRoleDto;
 import it.unical.demacs.informatica.easyhomebackend.service.IUserService;
+import it.unical.demacs.informatica.easyhomebackend.service.ImmobileService;
 import it.unical.demacs.informatica.easyhomebackend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,11 @@ import java.util.Optional;
 public class UtenteController {
 
     private final IUserService userService;
+    private final ImmobileService immobileService;
 
-    public UtenteController(IUserService userService) {
+    public UtenteController(IUserService userService, ImmobileService immobileService) {
         this.userService = userService;
+        this.immobileService = immobileService;
     }
 
     @RequestMapping(value = "/open/createUser" , method = RequestMethod.POST)
@@ -46,7 +49,9 @@ public class UtenteController {
 
         // Verifica se l'utente è presente nel Optional
         if (utenteOptional.isPresent()) {
-            Utente utente = utenteOptional.get();  // Estrai l'utente dall'Optional
+            Utente utente = utenteOptional.get();
+
+
             return ResponseEntity.ok(utente.getImmobili());  // Ora puoi chiamare getImmobili
         } else {
             return ResponseEntity.notFound().build();  // Rispondi con un 404 se l'utente non è trovato

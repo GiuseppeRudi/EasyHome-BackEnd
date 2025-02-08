@@ -141,5 +141,7 @@ public class ImmobileService implements IImmobileService {
     }
 
 
-
+    public List<Immobile> getAllImmobili() {
+        return immobileDao.findAll();
+    }
 }

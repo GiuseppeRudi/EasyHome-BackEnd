@@ -2,10 +2,13 @@ package it.unical.demacs.informatica.easyhomebackend.controller;
 
 import it.unical.demacs.informatica.easyhomebackend.model.Immobile;
 import it.unical.demacs.informatica.easyhomebackend.model.ImmobileMinimal;
+import it.unical.demacs.informatica.easyhomebackend.model.UserRole;
+import it.unical.demacs.informatica.easyhomebackend.model.Utente;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.ImmobileDto;
 import it.unical.demacs.informatica.easyhomebackend.persistence.dto.MarkerDTO;
 import it.unical.demacs.informatica.easyhomebackend.service.IImmobileService;
 import it.unical.demacs.informatica.easyhomebackend.service.ImmobileService;
+import it.unical.demacs.informatica.easyhomebackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +16,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class ImmobileController {
 
     private final IImmobileService immobileService= new ImmobileService();
+    private final UserService userService;
 
-    public ImmobileController() { }
+    public ImmobileController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "/auth/immobili/createImmobile", method = RequestMethod.POST)
     public ResponseEntity<Void> createImmobile(
@@ -69,10 +76,43 @@ public class ImmobileController {
     public ResponseEntity<List<ImmobileMinimal>> getImmobiliMinimalByUsername(
             @PathVariable("username") String username) {
 
-        // Utilizza i parametri per filtrare i risultati
-        List<ImmobileMinimal> immobiliMinimal = this.immobileService.getImmobiliMinimalByUsername(username);
+        // Recupera l'utente
+        Optional<Utente> utenteOptional = userService.getUser(username);
+
+        // Controlla se l'utente esiste
+        if (utenteOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Se non esiste, restituisci 404
+        }
+
+        Utente utente = utenteOptional.get();
+
+        // Se l'utente è admin, restituisci tutti gli immobili (convertendoli in ImmobileMinimal)
+        if (utente.getRole() == UserRole.ROLE_ADMIN) {
+            List<Immobile> tuttiGliImmobili = immobileService.getAllImmobili();
+
+            List<ImmobileMinimal> immobiliMinimal = tuttiGliImmobili.stream()
+                    .map(immobile -> new  ImmobileMinimal(
+                                    immobile.getId(),
+                                    immobile.getNome(),
+                                    immobile.getPrezzo(),
+                                    immobile.getTipo(),
+                                    immobile.getCategoria(),
+                                    immobile.getMq(),
+                            immobile.getFotoPaths() != null && !immobile.getFotoPaths().isEmpty()
+                                    ? immobile.getFotoPaths().getFirst()
+                                    : "default.jpg",
+
+                            immobile.getPrezzo_scontato()
+                            ))
+                            .toList();
+            return ResponseEntity.ok(immobiliMinimal);
+        }
+
+        // Se non è admin, restituisci solo gli immobili dell'utente
+        List<ImmobileMinimal> immobiliMinimal = immobileService.getImmobiliMinimalByUsername(username);
         return ResponseEntity.ok(immobiliMinimal);
     }
+
 
     @GetMapping("/open/markers")
     public ResponseEntity<List<MarkerDTO>> getAllMarkers() {
