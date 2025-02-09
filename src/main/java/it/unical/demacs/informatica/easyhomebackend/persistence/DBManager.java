@@ -18,12 +18,11 @@ public class DBManager {
     private Connection connection;
 
     // Variabili separate per username e password
-    private static final String DB_USER = "postgres";  // Username del database
-    private static final String DB_PASSWORD = "mirko";  // Password del database
+    private static final String DB_USER = "POSTGRES_USER";  // Username del database
+    private static final String DB_PASSWORD = "POSTGRES_PASSWORD";  // Password del database
 
     private DBManager() {
         try {
-            // Carica il driver JDBC (opzionale per le versioni più recenti di Java)
             Class.forName("org.postgresql.Driver");
 
             // Crea la connessione utilizzando i dettagli del database
